@@ -8,8 +8,12 @@ import { FieldValues } from "react-hook-form";
 export const registerUser = async (payload: FieldValues) => {
   try {
     const { data }: any = await nexiosInstance.post("/auth/register", payload);
-    cookies().set("accessToken", data?.data?.accessToken);
-    cookies().set("refreshToken", data?.data?.refreshToken);
+    if (data?.success) {
+      cookies().set("accessToken", data?.data?.accessToken);
+      cookies().set("refreshToken", data?.data?.refreshToken);
+    } else {
+      throw new Error(data?.message);
+    }
   } catch (error: any) {
     throw new Error(error);
   }
@@ -18,14 +22,16 @@ export const registerUser = async (payload: FieldValues) => {
 export const loginUser = async (payload: FieldValues) => {
   try {
     const { data }: any = await nexiosInstance.post("/auth/login", payload);
-    cookies().set("accessToken", data?.data?.accessToken);
-    cookies().set("refreshToken", data?.data?.refreshToken);
+    if (data?.success) {
+      cookies().set("accessToken", data?.data?.accessToken);
+      cookies().set("refreshToken", data?.data?.refreshToken);
+    } else {
+      throw new Error(data?.message);
+    }
   } catch (error: any) {
     throw new Error(error);
   }
 };
-
-
 
 export const logOut = () => {
   cookies().delete("accessToken");

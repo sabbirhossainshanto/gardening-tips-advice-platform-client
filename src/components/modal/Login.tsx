@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import {
@@ -7,7 +8,6 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  useDisclosure,
   Link,
 } from "@nextui-org/react";
 import { LockIcon, MailIcon } from "../icons";
@@ -19,9 +19,13 @@ import { useUserLogin } from "@/src/hooks/auth";
 import { useEffect } from "react";
 import { loginValidationSchema } from "@/src/schemas/login.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useShowRegisterModal } from "@/src/store/showRegister";
+import { useShowLoginModal } from "@/src/store/showLogin";
 
 const Login = () => {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const [_showRegister, setShowRegister] = useShowRegisterModal();
+  const [showLogin, setShowLogin] = useShowLoginModal();
+
   const { setIsLoading: userLoading } = useUser();
 
   const { mutate: handleLogin, isPending, isSuccess } = useUserLogin();
@@ -32,21 +36,28 @@ const Login = () => {
 
   useEffect(() => {
     if (!isPending && isSuccess) {
-      onClose();
+      setShowLogin(false);
     }
   }, [isPending, isSuccess]);
 
+  const handleShowRegister = () => {
+    setShowLogin(false);
+    setShowRegister(true);
+  };
+
   return (
     <>
-      <Button
-        className="text-sm font-normal text-default-600 bg-default-100"
-        variant="flat"
-        onPress={onOpen}
+      <Modal
+        isOpen={showLogin}
+        onOpenChange={() => setShowLogin(false)}
+        placement="top-center"
       >
-        Login
-      </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center">
         <GTForm
+          //! Only for development
+          defaultValues={{
+            email: "sabbir@gmail.com",
+            password: "123456",
+          }}
           resolver={zodResolver(loginValidationSchema)}
           onSubmit={onSubmit}
         >
@@ -79,6 +90,7 @@ const Login = () => {
                     <span className="text-sm">
                       <span>{"Don't"} have any account? </span>
                       <Link
+                        onClick={handleShowRegister}
                         size="md"
                         color="primary"
                         className="cursor-pointer"
@@ -90,10 +102,18 @@ const Login = () => {
                 </ModalBody>
 
                 <ModalFooter>
-                  <Button color="danger" variant="flat" onPress={onClose}>
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    onPress={() => setShowLogin(false)}
+                  >
                     Close
                   </Button>
-                  <Button type="submit" color="primary">
+                  <Button
+                    isLoading={isPending && !isSuccess ? true : false}
+                    type="submit"
+                    color="primary"
+                  >
                     Sign in
                   </Button>
                 </ModalFooter>
