@@ -14,6 +14,7 @@ export default function GTInput({
   label,
   name,
   endContent,
+  startContent,
 }: IProps) {
   const {
     register,
@@ -23,6 +24,7 @@ export default function GTInput({
   return (
     <Input
       endContent={endContent}
+      startContent={startContent}
       {...register(name)}
       errorMessage={errors[name] ? (errors[name].message as string) : ""}
       isInvalid={!!errors[name]}

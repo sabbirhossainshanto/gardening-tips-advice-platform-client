@@ -9,4 +9,5 @@ export interface IInput {
     name: string;
     disabled?:boolean
     endContent?:ReactNode
+    startContent?:ReactNode
   }

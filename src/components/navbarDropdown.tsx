@@ -29,7 +29,6 @@ export default function NavbarDropdown() {
   const handleNavigation = (pathname: string) => {
     router.push(pathname);
   };
-
   return (
     <Dropdown>
       <DropdownTrigger>

@@ -58,6 +58,19 @@ export const getCurrentUser = async () => {
   return decode;
 };
 
+export const getMe = async () => {
+  try {
+    const { data }: any = await nexiosInstance.get("/profile");
+    if (data?.success) {
+      return data;
+    } else {
+      throw new Error(data?.message);
+    }
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 // export const getNewAccessToken = async () => {
 //   try {
 //     const refreshToken = cookies().get("refreshToken")?.value;

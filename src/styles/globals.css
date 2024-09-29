@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.container-box {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 2rem /* 32px */;
+  padding-left: 2rem /* 32px */;
+}
+@media (min-width: 1400px) {
+  .container-box {
+    max-width: 1400px;
+  }
+}
+
+.hover-nav-item:hover{
+  background-color: #a8b3cf33
+}
