@@ -8,7 +8,7 @@ interface IProps extends IInput {
     label: string;
   }[];
 }
-const FXSelect = ({
+const GTSelect = ({
   options,
   name,
   label,
@@ -31,4 +31,4 @@ const FXSelect = ({
   );
 };
 
-export default FXSelect;
+export default GTSelect;

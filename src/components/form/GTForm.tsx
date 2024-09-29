@@ -16,7 +16,7 @@ interface TProps extends IFormConfig {
   children: ReactNode;
   onSubmit: SubmitHandler<FieldValues>;
 }
-const FXForm = ({ children, onSubmit, defaultValues, resolver }: TProps) => {
+const GTForm = ({ children, onSubmit, defaultValues, resolver }: TProps) => {
   const formConfig: IFormConfig = {};
   if (!!defaultValues) {
     formConfig["defaultValues"] = defaultValues;
@@ -32,4 +32,4 @@ const FXForm = ({ children, onSubmit, defaultValues, resolver }: TProps) => {
   );
 };
 
-export default FXForm;
+export default GTForm;

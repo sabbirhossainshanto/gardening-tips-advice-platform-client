@@ -7,7 +7,7 @@ interface IProps extends IInput {
   type?: string;
 }
 
-export default function FXTextarea({
+export default function GTTextarea({
   name,
   label,
   variant = "bordered",

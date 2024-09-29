@@ -17,6 +17,7 @@ import clsx from "clsx";
 import { SearchIcon, Logo } from "../components/icons";
 import { siteConfig } from "../config/site";
 import { ThemeSwitch } from "./theme-switch";
+import Login from "./modal/Login";
 
 export const Navbar = () => {
   const searchInput = (
@@ -71,14 +72,8 @@ export const Navbar = () => {
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
         <NavbarItem className="hidden md:flex">
-          <Button
-            as={Link}
-            className="text-sm font-normal text-default-600 bg-default-100"
-            href="/login"
-            variant="flat"
-          >
-            Login
-          </Button>
+      
+          <Login />
         </NavbarItem>
       </NavbarContent>
 

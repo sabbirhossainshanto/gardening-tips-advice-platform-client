@@ -24,6 +24,9 @@ export const loginUser = async (payload: FieldValues) => {
     throw new Error(error);
   }
 };
+
+
+
 export const logOut = () => {
   cookies().delete("accessToken");
   cookies().delete("refreshToken");

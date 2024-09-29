@@ -4,7 +4,7 @@ import { Controller } from "react-hook-form";
 
 interface IProps extends IInput {}
 
-const FXDatePicker = ({ name, label, variant }: IProps) => {
+const GTDatePicker = ({ name, label, variant }: IProps) => {
   return (
     <Controller
       name={name}
@@ -20,4 +20,4 @@ const FXDatePicker = ({ name, label, variant }: IProps) => {
   );
 };
 
-export default FXDatePicker;
+export default GTDatePicker;

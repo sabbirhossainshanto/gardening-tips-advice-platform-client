@@ -6,13 +6,14 @@ import { useFormContext } from "react-hook-form";
 
 interface IProps extends IInput {}
 
-export default function FXInput({
+export default function GTInput({
   variant = "bordered",
   size = "md",
   required = false,
   type = "text",
   label,
   name,
+  endContent,
 }: IProps) {
   const {
     register,
@@ -21,6 +22,7 @@ export default function FXInput({
 
   return (
     <Input
+      endContent={endContent}
       {...register(name)}
       errorMessage={errors[name] ? (errors[name].message as string) : ""}
       isInvalid={!!errors[name]}

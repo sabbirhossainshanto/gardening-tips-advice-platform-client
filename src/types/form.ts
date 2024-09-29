@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface IInput {
     variant?: "flat" | "bordered" | "faded" | "underlined";
     size?: "sm" | "md" | "lg";
@@ -6,4 +8,5 @@ export interface IInput {
     label: string;
     name: string;
     disabled?:boolean
+    endContent?:ReactNode
   }
