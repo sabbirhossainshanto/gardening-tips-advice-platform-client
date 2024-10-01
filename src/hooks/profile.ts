@@ -18,7 +18,7 @@ export const useUpdateProfile = () => {
 };
 
 export const useGetMe = () => {
-  return useQuery<any, Error, FieldValues>({
+  return useQuery<any, Error, any>({
     queryKey: ["user"],
     queryFn: async () => await getMe(),
   });

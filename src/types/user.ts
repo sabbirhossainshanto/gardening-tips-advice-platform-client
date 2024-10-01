@@ -18,3 +18,13 @@ export interface IUser {
   exp: number;
   __v: number;
 }
+
+export interface IUpdateUserData {
+  id: string;
+  data: {
+    role?: "USER" | "ADMIN";
+    status?: "ACTIVE" | "BLOCKED";
+  };
+}
+
+export type TUpdateType = "USER" | "ADMIN" | "ACTIVE" | "BLOCKED";

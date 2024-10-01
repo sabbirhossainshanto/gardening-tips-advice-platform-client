@@ -1,11 +1,22 @@
-import { useMutation } from "@tanstack/react-query";
-import { addToBookmark, deletePost, upvoteOrDownvote } from "../services/Post";
-import { IUpdateVote } from "../types";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  addToBookmark,
+  deletePost,
+  getSinglePost,
+  upvoteOrDownvote,
+} from "../services/Post";
+import { IPost, IUpdateVote } from "../types";
 import { toast } from "sonner";
+
+interface IPostProps {
+  message: string;
+  success: boolean;
+  data: IPost;
+}
 
 export const useAddVote = () => {
   return useMutation<any, Error, IUpdateVote>({
-    mutationKey: ["POST_GARDEN"],
+    mutationKey: ["ADD_VOTE"],
     mutationFn: async (payload: IUpdateVote) => await upvoteOrDownvote(payload),
     onSuccess: (data) => {
       toast.success(data?.message);
@@ -31,7 +42,7 @@ export const useAddBookmark = () => {
 
 export const useDeletePost = () => {
   return useMutation<any, Error, any>({
-    mutationKey: ["POST"],
+    mutationKey: ["DELETE_POST"],
     mutationFn: async (id) => await deletePost(id),
     onSuccess: (data) => {
       toast.success(data?.message);
@@ -39,5 +50,14 @@ export const useDeletePost = () => {
     onError: (error) => {
       toast.error(error.message);
     },
+  });
+};
+
+export const useGetSInglePost = (id: string) => {
+  return useQuery<any, Error, IPostProps>({
+    queryKey: [`SINGLE_POST${id}`],
+    enabled: id ? true : false,
+    queryFn: async () => await getSinglePost(id),
+    // gcTime: 0,
   });
 };

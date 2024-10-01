@@ -43,3 +43,15 @@ export const deletePost = async (id: string) => {
     throw new Error(error);
   }
 };
+
+export const getSinglePost = async (id: string) => {
+  try {
+    const { data }: NexiosResponse<ISinglePostResponseType> =
+      await nexiosInstance.get(`/posts/${id}`);
+    // console.log("single post", data);
+    console.log("single post", id);
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};

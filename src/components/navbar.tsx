@@ -27,6 +27,7 @@ import NavbarDropdown from "./navbarDropdown";
 import { useShowRegisterModal } from "../store/showRegister";
 import Register from "./modal/Register";
 import { useShowLoginModal } from "../store/showLogin";
+import CreatePost from "./modal/CreatePost";
 
 export const Navbar = () => {
   const [showLogin, setShowLogin] = useShowLoginModal();
@@ -87,6 +88,7 @@ export const Navbar = () => {
                 </NavbarItem>
               ))}
             </ul>
+            <CreatePost />
           </NavbarContent>
 
           <NavbarContent

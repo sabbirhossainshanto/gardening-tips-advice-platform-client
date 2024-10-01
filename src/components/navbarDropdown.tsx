@@ -44,25 +44,35 @@ export default function NavbarDropdown() {
           src={user?.profilePhoto}
         />
       </DropdownTrigger>
-      <DropdownMenu aria-label="Static Actions">
-        <DropdownItem onClick={() => handleNavigation("/profile")}>
-          Profile
-        </DropdownItem>
-        <DropdownItem onClick={() => handleNavigation("/profile/settings")}>
-          Settings
-        </DropdownItem>
-        <DropdownItem onClick={() => handleNavigation("/profile/create-post")}>
-          Create Post
-        </DropdownItem>
-        <DropdownItem
-          onClick={handleLogout}
-          key="delete"
-          className="text-danger"
-          color="danger"
-        >
-          Logout
-        </DropdownItem>
-      </DropdownMenu>
+      {user?.role === "USER" ? (
+        <DropdownMenu aria-label="Static Actions">
+          <DropdownItem onClick={() => handleNavigation("/profile")}>
+            Profile
+          </DropdownItem>
+          <DropdownItem
+            onClick={handleLogout}
+            key="delete"
+            className="text-danger"
+            color="danger"
+          >
+            Logout
+          </DropdownItem>
+        </DropdownMenu>
+      ) : (
+        <DropdownMenu aria-label="Static Actions">
+          <DropdownItem onClick={() => handleNavigation("/dashboard")}>
+            Dashboard
+          </DropdownItem>
+          <DropdownItem
+            onClick={handleLogout}
+            key="delete"
+            className="text-danger"
+            color="danger"
+          >
+            Logout
+          </DropdownItem>
+        </DropdownMenu>
+      )}
     </Dropdown>
   );
 }

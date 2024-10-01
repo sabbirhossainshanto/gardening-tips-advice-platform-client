@@ -10,7 +10,6 @@ const defaultConfig: NexiosOptions = {
     Accept: "application/json",
   },
   credentials: "include",
-  timeout: 10000,
 };
 
 const nexiosInstance = new Nexios(defaultConfig);

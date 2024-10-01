@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { IPost, IUpdateVote } from "@/src/types";
@@ -6,29 +7,38 @@ import { Image } from "@nextui-org/image";
 import {
   Bookmark,
   DownVote,
-  EyeIcon,
   FillBookmark,
   FillDownVote,
   FillUpVote,
   UpVote,
-} from "../icons";
+} from "../../icons";
 import { useAddBookmark, useAddVote, useDeletePost } from "@/src/hooks/post";
 import { useUser } from "@/src/context/user.provider";
 import { DeleteIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetMe } from "@/src/hooks/profile";
+import { Button } from "@nextui-org/button";
+import { Input } from "@nextui-org/input";
+import { useAddComment, useGetAllComment } from "@/src/hooks/comment";
+import { ICommentPayload } from "@/src/types/comment";
+import { useState } from "react";
+import Comment from "../Comment/Comment";
 
-import { useRouter } from "next/navigation";
-
-const PostCard = ({ post }: { post: IPost }) => {
-  const router = useRouter();
+const SinglePost = ({ post }: { post: IPost }) => {
+  const [comment, setComment] = useState("");
   const queryClient = useQueryClient();
+  const {
+    mutate: addComment,
+    isPending: isCommentSuccess,
+    isSuccess: isCommentPending,
+  } = useAddComment();
   const { user } = useUser();
   const { data } = useGetMe();
   const { mutate: handleAddVote } = useAddVote();
   const { mutate: deletePost } = useDeletePost();
   const { mutate: addToBookmark } = useAddBookmark();
+  const { data: commentData } = useGetAllComment();
 
   const favoritesPost: string[] = data?.data?.favorites?.map(
     (post: IPost) => post._id
@@ -66,6 +76,19 @@ const PostCard = ({ post }: { post: IPost }) => {
     }
   };
 
+  const handleAddComment = (id: string) => {
+    if (comment) {
+      const commentData = {
+        comment,
+        post: id,
+        user: user?._id,
+      };
+      addComment(commentData);
+    } else {
+      toast.error("Please enter a comment!");
+    }
+  };
+
   const isUserUpVoted = post?.upvotes?.find(
     (upvote) => upvote._id === user?._id
   );
@@ -73,14 +96,13 @@ const PostCard = ({ post }: { post: IPost }) => {
     (downvote) => downvote._id === user?._id
   );
 
-  const handleNavigateToDetailsPage = (id: string) => {
-    router.push(`/${id}`);
-  };
+  console.log(commentData);
+
   return (
     <>
       <NextUiCard
         isFooterBlurred
-        className="h-[400px] w-full p-3 border border-gray-700"
+        className=" w-full p-3 border border-gray-700"
       >
         <CardHeader className="flex-col items-start">
           <h4 className="mt-2  p-1 text-2xl font-medium ">{post.title}</h4>
@@ -132,38 +154,7 @@ const PostCard = ({ post }: { post: IPost }) => {
                 </span>
               </button>
             </div>
-            <div className="flex flex-row items-stretch select-none">
-              <button
-                onClick={() => handleNavigateToDetailsPage(post?._id)}
-                className="inline-flex cursor-pointer select-none flex-row
-        items-center  transition
-        duration-200 ease-in-out justify-center font-bold  h-8 w-8 p-0 rounded-10"
-              >
-                <svg
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6 pointer-events-none"
-                >
-                  <path
-                    d="M8.084 3.217a35.447 35.447 0 017.05-.078l.782.078.279.031c1.089.121 1.885.372 2.606.828a4.516 4.516 0 011.664 1.86c.336.69.5 1.423.53 2.361l.005.321v3.975a4.493 4.493 0 01-3.545 4.392l-.207.04-2.089.346-2.86 2.992-.147.135c-.986.789-2.399.623-3.205-.324-.532-.625-.616-1.34-.51-2.29l.029-.224.038-.254.033-.187-1.332-.189a5.011 5.011 0 01-1.677-.55l-.253-.146-.243-.16a4.777 4.777 0 01-1.491-1.721 4.935 4.935 0 01-.532-1.972l-.009-.3V8.618c0-1.096.162-1.915.535-2.683.375-.77.94-1.4 1.664-1.859.649-.41 1.359-.655 2.288-.788l.318-.04.28-.031zm7.666 1.491a33.948 33.948 0 00-6.752-.075l-.748.075-.28.031c-.915.102-1.481.297-1.97.606a3.016 3.016 0 00-1.116 1.247c-.228.468-.357.989-.38 1.76l-.004.266v3.563c0 .577.134 1.116.375 1.587.242.471.592.874 1.024 1.18.37.263.801.453 1.276.554l.242.043 1.98.283c.339.048.457.096.575.175.119.078.262.187.27.386l-.002.024-.013.08-.164.741-.064.333c-.111.63-.167 1.332.09 1.634.263.309.7.39 1.037.187l.089-.062 2.998-3.135.13-.101.092-.063.077-.04.08-.03.035-.01.087-.02L17 15.545a2.993 2.993 0 002.495-2.77l.005-.182V8.618c0-.921-.13-1.506-.384-2.026A3.016 3.016 0 0018 5.345c-.44-.278-.943-.464-1.706-.572l-.265-.034-.279-.03zm-.55 6.294l.093.005c.398.044.707.36.707.746 0 .38-.301.693-.691.743l-.109.007H8.8l-.093-.005c-.398-.044-.707-.36-.707-.745 0-.38.301-.694.691-.744l.109-.007h6.4zm0-3.5l.093.004c.398.044.707.36.707.746 0 .38-.301.693-.691.743l-.109.007H8.8l-.093-.005C8.309 8.953 8 8.637 8 8.252c0-.38.301-.694.691-.744l.109-.007h6.4z"
-                    fill="currentcolor"
-                    fillRule="evenodd"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div className="flex flex-row items-stretch select-none">
-              <button
-                onClick={() => handleNavigateToDetailsPage(post?._id)}
-                className="inline-flex cursor-pointer select-none flex-row
-        items-center  transition
-        duration-200 ease-in-out justify-center font-bold  h-8 w-8 p-0 rounded-10"
-              >
-                <EyeIcon />
-              </button>
-            </div>
+
             <div className="flex flex-row items-stretch select-none">
               <button
                 onClick={() => handleAddBookmark(post?._id)}
@@ -211,9 +202,34 @@ const PostCard = ({ post }: { post: IPost }) => {
             ) : null}
           </div>
         </CardFooter>
+
+        <div className="flex items-center justify-between gap-3 mt-4">
+          <Input
+            onChange={(e) => setComment(e.target.value)}
+            size="sm"
+            label="Comment"
+            name="comment"
+            type="text"
+          />
+          <Button
+            onClick={() => handleAddComment(post?._id)}
+            isLoading={isCommentPending && !isCommentSuccess ? true : false}
+            type="submit"
+            size="lg"
+          >
+            Comment
+          </Button>
+        </div>
+        {commentData?.data && commentData?.data?.length > 0 && (
+          <div className="flex flex-col max-h-[400px] overflow-y-scroll  my-5 rounded-md space-y-5">
+            {commentData?.data?.map((comment) => (
+              <Comment key={comment?._id} comment={comment} />
+            ))}
+          </div>
+        )}
       </NextUiCard>
     </>
   );
 };
 
-export default PostCard;
+export default SinglePost;
