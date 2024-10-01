@@ -2,8 +2,8 @@
 import GTForm from "@/src/components/form/GTForm";
 import GTInput from "@/src/components/form/GTInput";
 import { useUser } from "@/src/context/user.provider";
-import { useGetMe } from "@/src/hooks/auth";
-import { useUpdateProfile } from "@/src/hooks/profile";
+
+import { useGetMe, useUpdateProfile } from "@/src/hooks/profile";
 import { logOut } from "@/src/services/AuthService";
 import { Button } from "@nextui-org/button";
 import axios from "axios";

@@ -59,93 +59,95 @@ export const Navbar = () => {
     <>
       {showRegister && <Register />}
       {showLogin && <Login />}
-      <NextUINavbar maxWidth="xl" position="sticky">
-        <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-          <NavbarBrand as="li" className="gap-3 max-w-fit">
-            <NextLink
-              className="flex justify-start items-center gap-1"
-              href="/"
-            >
-              <Logo />
-              <p className="font-bold text-inherit">Gardening</p>
-            </NextLink>
-          </NavbarBrand>
-          <ul className="hidden lg:flex gap-4 justify-start ml-2">
-            {siteConfig.navItems.map((item) => (
-              <NavbarItem key={item.href}>
-                <NextLink
-                  className={clsx(
-                    linkStyles({ color: "foreground" }),
-                    "data-[active=true]:text-primary data-[active=true]:font-medium"
-                  )}
-                  color="foreground"
-                  href={item.href}
-                >
-                  {item.label}
-                </NextLink>
-              </NavbarItem>
-            ))}
-          </ul>
-        </NavbarContent>
+      <div className="container-box">
+        <NextUINavbar maxWidth="full" position="sticky">
+          <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
+            <NavbarBrand as="li" className="gap-3 max-w-fit">
+              <NextLink
+                className="flex justify-start items-center gap-1"
+                href="/"
+              >
+                <Logo />
+                <p className="font-bold text-inherit">Gardening</p>
+              </NextLink>
+            </NavbarBrand>
+            <ul className="hidden lg:flex gap-4 justify-start ml-2">
+              {siteConfig.navItems.map((item) => (
+                <NavbarItem key={item.href}>
+                  <NextLink
+                    className={clsx(
+                      linkStyles({ color: "foreground" }),
+                      "data-[active=true]:text-primary data-[active=true]:font-medium"
+                    )}
+                    color="foreground"
+                    href={item.href}
+                  >
+                    {item.label}
+                  </NextLink>
+                </NavbarItem>
+              ))}
+            </ul>
+          </NavbarContent>
 
-        <NavbarContent
-          className="hidden sm:flex basis-1/5 sm:basis-full"
-          justify="end"
-        >
-          <NavbarItem className="hidden sm:flex gap-2">
+          <NavbarContent
+            className="hidden sm:flex basis-1/5 sm:basis-full"
+            justify="end"
+          >
+            <NavbarItem className="hidden sm:flex gap-2">
+              <ThemeSwitch />
+            </NavbarItem>
+            <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
+            <NavbarItem className="hidden md:flex">
+              {user?.email ? (
+                <NavbarDropdown />
+              ) : (
+                <Button
+                  onClick={() => setShowLogin(true)}
+                  className="text-sm font-normal text-default-600 bg-default-100"
+                  variant="flat"
+                >
+                  Login
+                </Button>
+              )}
+            </NavbarItem>
+          </NavbarContent>
+
+          <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
             <ThemeSwitch />
-          </NavbarItem>
-          <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-          <NavbarItem className="hidden md:flex">
-            {user?.email ? (
-              <NavbarDropdown />
-            ) : (
-              <Button
-                onClick={() => setShowLogin(true)}
-                className="text-sm font-normal text-default-600 bg-default-100"
-                variant="flat"
-              >
-                Login
-              </Button>
-            )}
-          </NavbarItem>
-        </NavbarContent>
+            <NavbarMenuToggle />
+          </NavbarContent>
 
-        <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-          <ThemeSwitch />
-          <NavbarMenuToggle />
-        </NavbarContent>
-
-        <NavbarMenu>
-          {searchInput}
-          <div className="mx-4 mt-2 flex flex-col gap-2">
-            {siteConfig.navMenuItems.map((item, index) => (
-              <NavbarMenuItem key={`${item}-${index}`}>
-                <Link
-                  color={item.href === pathname ? "primary" : "foreground"}
-                  href={item.href}
-                  size="lg"
-                >
-                  {item.label}
+          <NavbarMenu>
+            {searchInput}
+            <div className="mx-4 mt-2 flex flex-col gap-2">
+              {siteConfig.navMenuItems.map((item, index) => (
+                <NavbarMenuItem key={`${item}-${index}`}>
+                  <Link
+                    color={item.href === pathname ? "primary" : "foreground"}
+                    href={item.href}
+                    size="lg"
+                  >
+                    {item.label}
+                  </Link>
+                </NavbarMenuItem>
+              ))}
+              {user?.email ? (
+                <Link onClick={handleLogout} size="lg" color="danger">
+                  Logout
                 </Link>
-              </NavbarMenuItem>
-            ))}
-            {user?.email ? (
-              <Link onClick={handleLogout} size="lg" color="danger">
-                Logout
-              </Link>
-            ) : (
-              <Button
-                className="text-sm font-normal text-default-600 bg-default-100"
-                variant="flat"
-                onClick={() => setShowLogin(true)}
-              >
-                Login
-              </Button>
-            )}
-          </div>
-        </NavbarMenu>
-      </NextUINavbar>
+              ) : (
+                <Button
+                  className="text-sm font-normal text-default-600 bg-default-100"
+                  variant="flat"
+                  onClick={() => setShowLogin(true)}
+                >
+                  Login
+                </Button>
+              )}
+            </div>
+          </NavbarMenu>
+        </NextUINavbar>
+      </div>
     </>
   );
 };

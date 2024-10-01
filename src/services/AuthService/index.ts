@@ -53,6 +53,15 @@ export const getCurrentUser = async () => {
       iat: decode?.iat,
       exp: decode?.exp,
       profilePhoto: decode.profilePhoto,
+      isVerified: decode?.isVerified,
+      premiumStatus: decode?.premiumStatus,
+      followers: decode?.followers,
+      following: decode?.following,
+      posts: decode?.posts,
+      favorites: decode?.favorites,
+      createdAt: decode?.createdAt,
+      updatedAt: decode?.updatedAt,
+      __v: decode?.__v,
     };
   }
   return decode;
@@ -70,20 +79,3 @@ export const getMe = async () => {
     throw new Error(error);
   }
 };
-
-// export const getNewAccessToken = async () => {
-//   try {
-//     const refreshToken = cookies().get("refreshToken")?.value;
-//     const res = await nexiosInstance({
-//       url: "/auth/refreshToken",
-//       method: "POST",
-//       withCredentials: true,
-//       headers: {
-//         cookies: `refreshToken=${refreshToken}`,
-//       },
-//     });
-//     return res.data;
-//   } catch (error) {
-//     throw new Error("Failed to get accessToken");
-//   }
-// };

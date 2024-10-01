@@ -11,7 +11,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { Avatar } from "@nextui-org/avatar";
 import { logOut } from "@/src/services/AuthService";
 import { useUser } from "@/src/context/user.provider";
-// import { protectedRoute } from "@/src/constant";
+export const protectedRoute = [
+  "/profile",
+  "/profile/:page*",
+  "/admin",
+  "/login",
+  "/register",
+];
 
 export default function NavbarDropdown() {
   const router = useRouter();
@@ -21,9 +27,9 @@ export default function NavbarDropdown() {
   const handleLogout = () => {
     logOut();
     userLoading(true);
-    // if (protectedRoute.some((route) => pathname.match(route))) {
-    //   router.push("/");
-    // }
+    if (protectedRoute.some((route) => pathname.match(route))) {
+      router.push("/");
+    }
   };
 
   const handleNavigation = (pathname: string) => {

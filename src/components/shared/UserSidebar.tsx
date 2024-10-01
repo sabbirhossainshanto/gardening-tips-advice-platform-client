@@ -12,7 +12,7 @@ const UserSidebar = () => {
         className={`flex items-center gap-3 hover-nav-item px-3 py-2 ${pathname === "/profile" ? "bg-[#a8b3cf33]" : ""}`}
       >
         <Home size={18} />
-        <span>My Feed</span>
+        <span>My Profile</span>
       </Link>
       <Link
         href="/profile/update-profile"
@@ -20,6 +20,13 @@ const UserSidebar = () => {
       >
         <User size={18} />
         <span>Update Profile</span>
+      </Link>
+      <Link
+        href="/profile/favorite"
+        className={`flex items-center gap-3 hover-nav-item px-3 py-2 ${pathname === "/profile/favorite" ? "bg-[#a8b3cf33]" : ""}`}
+      >
+        <User size={18} />
+        <span>Favorite</span>
       </Link>
     </div>
   );
