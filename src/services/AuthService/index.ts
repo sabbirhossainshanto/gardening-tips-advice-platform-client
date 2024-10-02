@@ -79,3 +79,15 @@ export const getMe = async () => {
     throw new Error(error);
   }
 };
+
+export const changePassword = async (payload: FieldValues) => {
+  try {
+    const { data }: any = await nexiosInstance.post(
+      "/auth/change-password",
+      payload
+    );
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};

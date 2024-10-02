@@ -6,7 +6,7 @@ export default async function Home() {
   const { data }: any = await nexiosInstance.get("/posts");
   return (
     <section className="flex flex-col items-center justify-center gap-4">
-      <div className=" grid justify-center gap-10 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 p-5">
+      <div className="w-full grid justify-center gap-10 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 p-5">
         {data?.data?.map((post: IPost) => (
           <PostCard key={post?._id} post={post} />
         ))}

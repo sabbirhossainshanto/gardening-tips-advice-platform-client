@@ -21,23 +21,31 @@ import { siteConfig } from "../config/site";
 import { ThemeSwitch } from "./theme-switch";
 import Login from "./modal/Login";
 import { useUser } from "../context/user.provider";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { logOut } from "../services/AuthService";
 import NavbarDropdown from "./navbarDropdown";
 import { useShowRegisterModal } from "../store/showRegister";
 import Register from "./modal/Register";
 import { useShowLoginModal } from "../store/showLogin";
 import CreatePost from "./modal/CreatePost";
+import ChangePassword from "./modal/ChangePassword";
+import { useChangePasswordModal } from "../store/showChangePassword";
+import { protectedRoute } from "../constant";
 
 export const Navbar = () => {
+  const [changePassword, setChangePassword] = useChangePasswordModal();
   const [showLogin, setShowLogin] = useShowLoginModal();
   const [showRegister] = useShowRegisterModal();
   const pathname = usePathname();
+  const router = useRouter();
   const { user, setIsLoading: setUserLoading } = useUser();
 
   const handleLogout = () => {
     logOut();
     setUserLoading(true);
+    if (protectedRoute.some((route) => pathname.match(route))) {
+      router.push("/");
+    }
   };
 
   const searchInput = (
@@ -58,6 +66,7 @@ export const Navbar = () => {
 
   return (
     <>
+      {changePassword && <ChangePassword />}
       {showRegister && <Register />}
       {showLogin && <Login />}
       <div className="container-box">
@@ -122,17 +131,43 @@ export const Navbar = () => {
           <NavbarMenu>
             {searchInput}
             <div className="mx-4 mt-2 flex flex-col gap-2">
-              {siteConfig.navMenuItems.map((item, index) => (
-                <NavbarMenuItem key={`${item}-${index}`}>
-                  <Link
-                    color={item.href === pathname ? "primary" : "foreground"}
-                    href={item.href}
-                    size="lg"
-                  >
-                    {item.label}
-                  </Link>
-                </NavbarMenuItem>
-              ))}
+              {user?.role === "ADMIN" ? (
+                <>
+                  <NavbarMenuItem key={`dashboard`}>
+                    <Link
+                      color={
+                        pathname === "/dashboard" ? "primary" : "foreground"
+                      }
+                      href="/dashboard"
+                      size="lg"
+                    >
+                      Dashboard
+                    </Link>
+                  </NavbarMenuItem>
+                </>
+              ) : (
+                <>
+                  <NavbarMenuItem key={`profile`}>
+                    <Link
+                      color={pathname === "/profile" ? "primary" : "foreground"}
+                      href="/profile"
+                      size="lg"
+                    >
+                      Profile
+                    </Link>
+                  </NavbarMenuItem>
+                </>
+              )}
+              <NavbarMenuItem key={`dashboard`}>
+                <Link
+                  onClick={() => setChangePassword(true)}
+                  color={"foreground"}
+                  size="lg"
+                  className="cursor-pointer"
+                >
+                  Change Password
+                </Link>
+              </NavbarMenuItem>
               {user?.email ? (
                 <Link onClick={handleLogout} size="lg" color="danger">
                   Logout

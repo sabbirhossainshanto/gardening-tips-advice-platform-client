@@ -1,5 +1,7 @@
 "use client";
 
+import { usePDF } from "react-to-pdf";
+import { FaFilePdf } from "react-icons/fa6";
 import { IPost, IUpdateVote } from "@/src/types";
 import { Card as NextUiCard, CardHeader, CardFooter } from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
@@ -20,8 +22,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useGetMe } from "@/src/hooks/profile";
 
 import { useRouter } from "next/navigation";
+import handleCopyPostURL from "@/src/utils/handleCopyPostURL";
 
 const PostCard = ({ post }: { post: IPost }) => {
+  const { toPDF, targetRef } = usePDF({ filename: "post.pdf" });
   const router = useRouter();
   const queryClient = useQueryClient();
   const { user } = useUser();
@@ -76,9 +80,11 @@ const PostCard = ({ post }: { post: IPost }) => {
   const handleNavigateToDetailsPage = (id: string) => {
     router.push(`/${id}`);
   };
+
   return (
     <>
       <NextUiCard
+        ref={targetRef}
         isFooterBlurred
         className="h-[400px] w-full p-3 border border-gray-700"
       >
@@ -116,7 +122,7 @@ const PostCard = ({ post }: { post: IPost }) => {
               <div className="box-border border border-gray-500 border-surface-float py-2.5" />
               <button
                 onClick={() => handleVoteUpdate("downvote")}
-                className=" inline-flex cursor-pointer select-none flex-row
+                className=" inline-flex flex-row
         items-center transition
         duration-200 ease-in-out  justify-center font-bold  h-8 w-8 p-0 rounded-10  pointer-events-auto !pl-3"
               >
@@ -133,12 +139,7 @@ const PostCard = ({ post }: { post: IPost }) => {
               </button>
             </div>
             <div className="flex flex-row items-stretch select-none">
-              <button
-                onClick={() => handleNavigateToDetailsPage(post?._id)}
-                className="inline-flex cursor-pointer select-none flex-row
-        items-center  transition
-        duration-200 ease-in-out justify-center font-bold  h-8 w-8 p-0 rounded-10"
-              >
+              <button onClick={() => handleNavigateToDetailsPage(post?._id)}>
                 <svg
                   width="1em"
                   height="1em"
@@ -155,22 +156,12 @@ const PostCard = ({ post }: { post: IPost }) => {
               </button>
             </div>
             <div className="flex flex-row items-stretch select-none">
-              <button
-                onClick={() => handleNavigateToDetailsPage(post?._id)}
-                className="inline-flex cursor-pointer select-none flex-row
-        items-center  transition
-        duration-200 ease-in-out justify-center font-bold  h-8 w-8 p-0 rounded-10"
-              >
+              <button onClick={() => handleNavigateToDetailsPage(post?._id)}>
                 <EyeIcon />
               </button>
             </div>
             <div className="flex flex-row items-stretch select-none">
-              <button
-                onClick={() => handleAddBookmark(post?._id)}
-                className="inline-flex cursor-pointer select-none flex-row
-        items-center transition
-        duration-200 ease-in-out justify-center font-bold y h-8 w-8 p-0 rounded-10 "
-              >
+              <button onClick={() => handleAddBookmark(post?._id)}>
                 {favoritesPost?.includes(post?._id) ? (
                   <FillBookmark />
                 ) : (
@@ -180,11 +171,7 @@ const PostCard = ({ post }: { post: IPost }) => {
                 {/**/}
               </button>
             </div>
-            <button
-              className="inline-flex cursor-pointer select-none flex-row
-        items-center  transition
-        duration-200 ease-in-out justify-center font-boldh-8 w-8 p-0 rounded-10"
-            >
+            <button onClick={() => handleCopyPostURL(post?._id)}>
               <svg
                 width="1em"
                 height="1em"
@@ -199,13 +186,11 @@ const PostCard = ({ post }: { post: IPost }) => {
                 />
               </svg>
             </button>
+            <button onClick={() => toPDF()}>
+              <FaFilePdf size={17} />
+            </button>
             {user?._id === post?.user?._id || user?.role === "ADMIN" ? (
-              <button
-                onClick={() => handleDeletePost(post?._id)}
-                className="inline-flex cursor-pointer select-none flex-row
-          items-center  transition
-          duration-200 ease-in-out justify-center font-boldh-8 w-8 p-0 rounded-10"
-              >
+              <button onClick={() => handleDeletePost(post?._id)}>
                 <DeleteIcon className="text-[#e04337]" />
               </button>
             ) : null}
