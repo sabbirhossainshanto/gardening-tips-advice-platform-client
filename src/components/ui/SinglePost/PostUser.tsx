@@ -23,14 +23,14 @@ const PostUser = ({ postUser }: { postUser: IUser }) => {
   return (
     <NextUiCard isFooterBlurred className=" w-full p-3 border border-gray-700">
       <CardHeader className="flex-col items-start">
-        <h4 className="mt-2  p-1 text-2xl font-medium ">{postUser.name}</h4>
+        <h4 className="mt-2  p-1 text-2xl font-medium ">{postUser?.name}</h4>
       </CardHeader>
 
       <div
-        key={postUser._id}
+        key={postUser?._id}
         className="flex items-center justify-between mt-2"
       >
-        <Image className="size-12 rounded-full" src={postUser.profilePhoto} />
+        <Image className="size-12 rounded-full" src={postUser?.profilePhoto} />
         <div>
           <h1>{postUser?.name}</h1>
         </div>

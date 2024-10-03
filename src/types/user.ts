@@ -1,3 +1,5 @@
+import { IPost } from "./post";
+
 export interface IUser {
   _id: string;
   name: string;
@@ -11,7 +13,7 @@ export interface IUser {
   followers: IUser[];
   following: IUser[];
   posts: string[];
-  favorites: string[];
+  favorites: IPost[];
   createdAt: string;
   updatedAt: string;
   iat: number;

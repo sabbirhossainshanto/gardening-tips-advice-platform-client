@@ -14,8 +14,13 @@ import { logOut } from "@/src/services/AuthService";
 import { useUser } from "@/src/context/user.provider";
 import { useChangePasswordModal } from "../store/showChangePassword";
 import { protectedRoute } from "../constant";
+import { useGetMe } from "../hooks/profile";
+import { Badge } from "@nextui-org/badge";
+import { CheckIcon } from "lucide-react";
+import { Button } from "@nextui-org/button";
 
 export default function NavbarDropdown() {
+  const { data: myData } = useGetMe();
   const [_changePassword, setChangePassword] = useChangePasswordModal();
   const router = useRouter();
   const pathname = usePathname();
@@ -37,17 +42,38 @@ export default function NavbarDropdown() {
     <>
       <Dropdown>
         <DropdownTrigger>
-          <Avatar
-            className="cursor-pointer"
-            isBordered
-            src={user?.profilePhoto}
-          />
+          {myData?.data?.isVerified ? (
+            <div>
+              <Badge
+                className="cursor-pointer rounded-full"
+                content={<CheckIcon size={11} />}
+                color="success"
+                size="sm"
+              >
+                <Avatar
+                  className="cursor-pointer"
+                  isBordered
+                  radius="full"
+                  color="success"
+                  src={user?.profilePhoto}
+                />
+              </Badge>
+            </div>
+          ) : (
+            <Avatar
+              className="cursor-pointer"
+              isBordered
+              radius="full"
+              src={user?.profilePhoto}
+            />
+          )}
         </DropdownTrigger>
         {user?.role === "USER" ? (
           <DropdownMenu aria-label="Static Actions">
             <DropdownItem onClick={() => handleNavigation("/profile")}>
               Profile
             </DropdownItem>
+
             <DropdownItem
               onClick={() => setChangePassword(true)}
               key="change password"

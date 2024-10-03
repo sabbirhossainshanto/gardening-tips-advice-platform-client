@@ -10,7 +10,7 @@ export const addComment = async (payload: ICommentPayload) => {
       `/comments/add-comment`,
       payload
     );
-    revalidateTag("comment");
+
     return data;
   } catch (error: any) {
     throw new Error(error);

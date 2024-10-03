@@ -70,30 +70,37 @@ const UpdateProfile = () => {
   }
   return (
     <div>
-      <div className="flex items-center gap-10">
-        <div className="border-b-1 border-gray-800 w-full py-2.5 pl-5">
-          <h1 className="font-bold text-xl">Profile</h1>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="py-4 pl-5 flex-1 container-box">
-          <div className=" w-full py-2.5">
-            <h1 className="font-bold text-xl mb-2">Account Information </h1>
-            <GTForm
-              defaultValues={{
-                name: data?.data?.name,
-                mobileNumber: data?.data?.mobileNumber,
-              }}
-              onSubmit={handleSubmit}
-            >
+      <GTForm
+        defaultValues={{
+          name: data?.data?.name,
+          mobileNumber: data?.data?.mobileNumber,
+          email: data?.data?.email,
+        }}
+        onSubmit={handleSubmit}
+      >
+        <div className="md:flex">
+          <div className="py-4 pl-5 flex-1 container-box">
+            <div className=" w-full py-2.5">
+              <h1 className="font-bold text-xl mb-2">Account Information </h1>
+
               <div className="mb-2">
                 <GTInput label="Name" type="text" name="name" />
               </div>
+
               <div className="mb-2">
                 <GTInput
                   label="Mobile Number"
                   type="text"
                   name="mobileNumber"
+                />
+              </div>
+              <div className="mb-2">
+                <GTInput
+                  readonly={true}
+                  disabled={true}
+                  label="Email"
+                  type="email"
+                  name="email"
                 />
               </div>
               <div className="mb-2">
@@ -113,6 +120,16 @@ const UpdateProfile = () => {
                   />
                 </div>
               </div>
+
+              <div className="flex items-center justify-end w-full mt-5">
+                <Button isLoading={loading} type="submit">
+                  Save Changes
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="py-4 pl-5 flex-1">
+            <div className=" w-full py-2.5">
               {imagePreview ? (
                 <div className="relative rounded-xl h-[300px] border-2 border-dashed border-default-300 p-2">
                   <img
@@ -130,21 +147,10 @@ const UpdateProfile = () => {
                   />
                 </div>
               )}
-              <div className="flex items-center justify-end w-full mt-5">
-                <Button isLoading={loading} type="submit">
-                  Save Changes
-                </Button>
-              </div>
-            </GTForm>
+            </div>
           </div>
         </div>
-        <div className="py-4 pl-5 flex-1">
-          <div className=" w-full py-2.5">
-            <h1 className="font-bold text-xl">{data?.data?.name}</h1>
-            <p className="text-[#a8b3cf] mt-1">{data?.data?.email}</p>
-          </div>
-        </div>
-      </div>
+      </GTForm>
     </div>
   );
 };

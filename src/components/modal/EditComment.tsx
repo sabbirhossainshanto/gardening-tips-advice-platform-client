@@ -11,7 +11,7 @@ import {
   Input,
 } from "@nextui-org/react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useEditComment, useGetSingleComment } from "@/src/hooks/comment";
 import { useUser } from "@/src/context/user.provider";
 import { useQueryClient } from "@tanstack/react-query";
@@ -44,7 +44,7 @@ const EditComment = ({
     };
     handleEditComment(editCommentData, {
       onSuccess: () => {
-        queryClient.refetchQueries({ queryKey: ["get_comment"] });
+        queryClient.refetchQueries({ queryKey: ["get_comments"] });
         setIsModalOpen(false);
       },
     });
@@ -59,7 +59,11 @@ const EditComment = ({
   }, [data?.data, reset]);
 
   if (!data?.data) {
-    return;
+    return null;
+  }
+
+  if (!isModalOpen) {
+    return null;
   }
 
   return (

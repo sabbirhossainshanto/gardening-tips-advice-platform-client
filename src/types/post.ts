@@ -7,7 +7,7 @@ export interface IPost {
   user: IUser;
   imageUrl: string;
   category: string;
-  tags: any[];
+  content: string;
   isPremium: boolean;
   upvotes: IUser[];
   downvotes: IUser[];

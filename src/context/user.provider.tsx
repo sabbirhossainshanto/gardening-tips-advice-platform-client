@@ -17,11 +17,25 @@ interface IUserContext {
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   user: IUser | null;
   setUser: (user: IUser | null) => void;
+  query: {
+    searchTerm: string;
+    sort: string;
+  };
+  setQuery: Dispatch<
+    SetStateAction<{
+      searchTerm: string;
+      sort: string;
+    }>
+  >;
 }
 
 const UserProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<IUser | null>(null);
+  const [query, setQuery] = useState({
+    searchTerm: "",
+    sort: "",
+  });
 
   const handleUser = async () => {
     const user = await getCurrentUser();
@@ -34,7 +48,9 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   }, [isLoading]);
 
   return (
-    <UserContext.Provider value={{ isLoading, setIsLoading, setUser, user }}>
+    <UserContext.Provider
+      value={{ isLoading, setIsLoading, setUser, user, query, setQuery }}
+    >
       {children}
     </UserContext.Provider>
   );

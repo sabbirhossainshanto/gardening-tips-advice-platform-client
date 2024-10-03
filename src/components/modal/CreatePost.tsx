@@ -7,79 +7,251 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button,
+  Spinner,
 } from "@nextui-org/react";
-import { LockIcon, MailIcon } from "../icons";
-import GTInput from "../form/GTInput";
-import GTForm from "../form/GTForm";
 import { FieldValues, SubmitHandler } from "react-hook-form";
-import { useShowCreatePostModal } from "@/src/store/showCreatePostModal";
+import "react-quill/dist/quill.snow.css"; // Quill styles
+import { useCallback, useRef, useState } from "react";
+import axios from "axios";
+import ReactQuill from "react-quill";
+import { useForm } from "react-hook-form";
+import "react-quill/dist/quill.snow.css";
+
+import { Input } from "@nextui-org/input";
+import { Button, Checkbox } from "@nextui-org/react";
+import { useCreatePost } from "@/src/hooks/post";
+import { useUser } from "@/src/context/user.provider";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CreatePost = () => {
-  const [showCreatePostModal, setShowCreatePostModal] =
-    useShowCreatePostModal();
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
+  const [image, setImage] = useState<File>();
+  const { user, query } = useUser();
+  const [content, setContent] = useState("");
+  const { mutate: createPost } = useCreatePost();
+  const { register, handleSubmit } = useForm();
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
+  const quillRef = useRef<ReactQuill>(null);
+
+  const handleChange = (content: string) => {
+    setContent(content);
+  };
+
+  const uploadToCloudinary = async (file: File, type: string) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append(
+      "upload_preset",
+      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!
+    );
+
+    try {
+      // https://api.cloudinary.com/v1_1/daar91zv4/upload
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/${type}/upload`,
+        formData
+      );
+      return response.data.secure_url;
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      return null;
+    }
+  };
+
+  const handleImageUpload = useCallback(() => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files ? input.files[0] : null;
+      if (file) {
+        setUploadingImage(true);
+        const imageUrl = await uploadToCloudinary(file, "image");
+        setUploadingImage(false);
+        if (imageUrl) {
+          const quill = quillRef.current!.getEditor();
+          const range = quill.getSelection(true);
+          quill.insertEmbed(range.index, "image", imageUrl, "user");
+        }
+      }
+    };
+  }, []);
+
+  const handleVideoUpload = () => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "video/*");
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files ? input.files[0] : null;
+      if (file) {
+        const videoUrl = await uploadToCloudinary(file, "video");
+        if (videoUrl) {
+          const quill = quillRef.current!.getEditor();
+          const range = quill.getSelection(true);
+          quill.insertEmbed(range.index, "video", videoUrl, "user");
+        }
+      }
+    };
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (e.target.files) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    setLoading(true);
+    const imageUrl = await uploadToCloudinary(image as File, "image");
+    const postData = {
+      user: user?._id,
+      imageUrl,
+      ...data,
+      content,
+    };
+    createPost(postData, {
+      onSuccess() {
+        setLoading(false);
+        queryClient.invalidateQueries({ queryKey: [`GET_ALL_POST`, query] });
+        setShowModal(false);
+      },
+      onError() {
+        setLoading(false);
+      },
+    });
+  };
+
+  /* Quill config */
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+    "color",
+    "code-block",
+  ];
+
+  const toolbar = [
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    ["bold", "italic", "underline", "code-block"],
+    ["link", "image"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ indent: "-1" }, { indent: "+1" }],
+    [{ direction: "rtl" }],
+    [{ color: [] }, { background: [] }],
+    [{ font: [] }],
+    [{ align: [] }],
+    ["clean"],
+  ];
+
+  const modules = {
+    toolbar: {
+      container: toolbar,
+      handlers: {
+        image: handleImageUpload,
+        // video: handleVideoUpload,
+      },
+    },
   };
 
   return (
     <>
-      <Button onPress={() => setShowCreatePostModal(true)}>Open</Button>
+      <Button onPress={() => setShowModal(true)}>Create Post</Button>
       <Modal
         size="5xl"
         scrollBehavior="inside"
-        isOpen={showCreatePostModal}
-        onOpenChange={() => setShowCreatePostModal(false)}
+        isOpen={showModal}
+        onOpenChange={() => setShowModal(false)}
         placement="top-center"
       >
-        <GTForm onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
             {(onClose) => (
               <>
                 <ModalHeader className="flex flex-col gap-1">
-                  Create a Post
+                  <div className="flex  items-center gap-10">
+                    <h1>Create a Post</h1>
+                    {uploadingImage && (
+                      <p className="flex items-center gap-2 text-sm">
+                        <span> Uploading Image</span> <Spinner size="sm" />
+                      </p>
+                    )}
+                  </div>
                 </ModalHeader>
 
                 <ModalBody>
-                  <GTInput
-                    label="Email"
-                    name="email"
-                    type="email"
-                    endContent={
-                      <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                    }
+                  <ReactQuill
+                    theme="snow"
+                    //   //   value={value}
+                    ref={quillRef}
+                    onChange={handleChange}
+                    modules={modules}
+                    formats={formats}
                   />
-                  <GTInput
-                    label="Password"
-                    name="password"
-                    type="password"
-                    endContent={
-                      <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                    }
-                  />
+                  <div className="mt-5 space-y-3">
+                    <Input
+                      {...register("title", { required: true })}
+                      label="Title"
+                      name="title"
+                      type="text"
+                    />
+                    <Input
+                      {...register("category", { required: true })}
+                      label="Category"
+                      name="category"
+                      type="text"
+                    />
+                    <Input
+                      onChange={handleImageChange}
+                      name="imageUrl"
+                      type="file"
+                    />
+                    <Input
+                      {...register("description")}
+                      label="Description"
+                      name="description"
+                      type="textarea"
+                    />
+
+                    <div className="flex items-center justify-between">
+                      <Checkbox {...register("isPremium")} color="success">
+                        Premium
+                      </Checkbox>
+                    </div>
+                  </div>
                 </ModalBody>
 
                 <ModalFooter>
                   <Button
                     color="danger"
                     variant="flat"
-                    onPress={() => setShowCreatePostModal(false)}
+                    onPress={() => setShowModal(false)}
                   >
                     Close
                   </Button>
-                  <Button
-                    // isLoading={isPending && !isSuccess ? true : false}
-                    type="submit"
-                    color="primary"
-                  >
-                    Sign in
+                  <Button isLoading={loading} type="submit" color="primary">
+                    Create Post
                   </Button>
                 </ModalFooter>
               </>
             )}
           </ModalContent>
-        </GTForm>
+        </form>
       </Modal>
     </>
   );

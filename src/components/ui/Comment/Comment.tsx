@@ -1,6 +1,6 @@
 import { IComment } from "@/src/types/comment";
 import { Image } from "@nextui-org/image";
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { DeleteIcon, EditIcon } from "../../icons";
 import EditComment from "../../modal/EditComment";
 import { useDeleteComment } from "@/src/hooks/comment";
@@ -19,23 +19,21 @@ const Comment = ({ comment }: { comment: IComment }) => {
   const deleteComment = (id: string) => {
     handleDeleteComment(id, {
       onSuccess: () => {
-        queryClient.refetchQueries({ queryKey: ["get_comment"] });
+        queryClient.refetchQueries({ queryKey: ["get_comments"] });
         setIsModalOpen(false);
       },
     });
   };
 
-  if (isModalOpen) {
-    return (
-      <EditComment
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-        commentId={commentId}
-      />
-    );
-  }
   return (
     <>
+      {isModalOpen && (
+        <EditComment
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          commentId={commentId}
+        />
+      )}
       <div className="h-[120px] border border-gray-700 rounded-md p-5">
         <div className="flex items-center gap-4">
           <Image

@@ -11,6 +11,18 @@ interface ISinglePostResponseType {
   data: IPost;
 }
 
+export const createPost = async (payload: Partial<IPost>) => {
+  try {
+    const { data }: any = await nexiosInstance.post(
+      `/posts/create-post`,
+      payload
+    );
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 export const upvoteOrDownvote = async (payload: IUpdateVote) => {
   try {
     const { data }: NexiosResponse<ISinglePostResponseType> =
@@ -49,7 +61,39 @@ export const getSinglePost = async (id: string) => {
     const { data }: NexiosResponse<ISinglePostResponseType> =
       await nexiosInstance.get(`/posts/${id}`);
     // console.log("single post", data);
-    console.log("single post", id);
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const getAllPost = async (query: any) => {
+  try {
+    const params = new URLSearchParams();
+    if (query?.searchTerm) {
+      params.append("searchTerm", query.searchTerm);
+    }
+    if (query?.sort) {
+      params.append("sort", query.sort);
+    }
+    if (query?.filter) {
+      params.append("filter", query.filter);
+    }
+
+    const { data }: any = await nexiosInstance.get(`/posts`, {
+      params,
+    });
+    // console.log("single post", data);
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const getUpvotersForMyPosts = async () => {
+  try {
+    const { data }: any = await nexiosInstance.get(`/posts/users/upvoters`);
+
     return data;
   } catch (error: any) {
     throw new Error(error);

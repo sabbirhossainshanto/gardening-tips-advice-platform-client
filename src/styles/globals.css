@@ -15,6 +15,32 @@
   }
 }
 
-.hover-nav-item:hover{
-  background-color: #a8b3cf33
+.hover-nav-item:hover {
+  background-color: #a8b3cf33;
+}
+
+.ql-editor img {
+  max-height: 300px !important;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+}
+.post-card img {
+  max-height: 300px !important;
+  width: auto;
+  object-fit: cover;
+  object-position: center;
+}
+
+.ql-container.ql-snow,
+.ql-toolbar.ql-snow {
+  border: 1px solid gray !important;
+  border-radius: 4px;
+}
+
+.ql-container.ql-snow {
+  min-height: 200px;
+}
+.ql-editor p {
+  min-height: 70px !important;
 }

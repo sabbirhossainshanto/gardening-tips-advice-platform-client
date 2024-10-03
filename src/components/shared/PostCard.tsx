@@ -3,7 +3,12 @@
 import { usePDF } from "react-to-pdf";
 import { FaFilePdf } from "react-icons/fa6";
 import { IPost, IUpdateVote } from "@/src/types";
-import { Card as NextUiCard, CardHeader, CardFooter } from "@nextui-org/card";
+import {
+  Card as NextUiCard,
+  CardHeader,
+  CardFooter,
+  CardBody,
+} from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
 import {
   Bookmark,
@@ -20,7 +25,6 @@ import { DeleteIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetMe } from "@/src/hooks/profile";
-
 import { useRouter } from "next/navigation";
 import handleCopyPostURL from "@/src/utils/handleCopyPostURL";
 
@@ -28,43 +32,58 @@ const PostCard = ({ post }: { post: IPost }) => {
   const { toPDF, targetRef } = usePDF({ filename: "post.pdf" });
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user } = useUser();
+  const { user, query } = useUser();
   const { data } = useGetMe();
   const { mutate: handleAddVote } = useAddVote();
   const { mutate: deletePost } = useDeletePost();
   const { mutate: addToBookmark } = useAddBookmark();
 
-  const favoritesPost: string[] = data?.data?.favorites?.map(
-    (post: IPost) => post._id
-  );
+  const favoritesPost: string[] | undefined =
+    data?.data && data?.data?.favorites?.map((post: IPost) => post._id);
 
   const handleVoteUpdate = (voteType: "upvote" | "downvote") => {
     if (user?.email) {
-      const votePayload: IUpdateVote = {
-        postId: post?._id as string,
-        userId: user?._id as string,
-        voteType,
-      };
-      handleAddVote(votePayload);
+      if (user?._id !== post?.user?._id) {
+        const votePayload: IUpdateVote = {
+          postId: post?._id as string,
+          userId: user?._id as string,
+          voteType,
+        };
+        handleAddVote(votePayload, {
+          onSuccess() {
+            queryClient.invalidateQueries({ queryKey: ["upvoters"] });
+          },
+        });
+      } else {
+        toast.error(`You cant ${voteType} on your post!`);
+      }
     } else {
       toast.error(`Please login to ${voteType} the post!`);
     }
   };
 
   const handleDeletePost = (id: string) => {
-    deletePost(id);
+    deletePost(id, {
+      onSuccess(data, variables, context) {
+        queryClient.invalidateQueries({ queryKey: [`GET_ALL_POST`, query] });
+      },
+    });
   };
 
   const handleAddBookmark = (id: string) => {
     if (user?.email) {
-      addToBookmark(
-        { postId: id },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["user"] });
-          },
-        }
-      );
+      if (user?._id !== post?.user?._id) {
+        addToBookmark(
+          { postId: id },
+          {
+            onSuccess: () => {
+              queryClient.invalidateQueries({ queryKey: ["user"] });
+            },
+          }
+        );
+      } else {
+        toast.error("Your cant bookmark your post!");
+      }
     } else {
       toast.error("Please login to bookmark the post!");
     }
@@ -81,12 +100,14 @@ const PostCard = ({ post }: { post: IPost }) => {
     router.push(`/${id}`);
   };
 
+  const contentHTML = { __html: post?.content };
+
   return (
     <>
       <NextUiCard
         ref={targetRef}
         isFooterBlurred
-        className="h-[400px] w-full p-3 border border-gray-700"
+        className="h-[400px] w-full p-3 border border-gray-700 "
       >
         <CardHeader className="flex-col items-start">
           <h4 className="mt-2  p-1 text-2xl font-medium ">{post.title}</h4>
@@ -94,13 +115,19 @@ const PostCard = ({ post }: { post: IPost }) => {
             {user?._id === post?.user?._id && "My Post"}
           </p>
         </CardHeader>
+        <CardBody>
+          <div
+            className="post-card mb-5"
+            dangerouslySetInnerHTML={contentHTML}
+          />
+          <Image
+            removeWrapper
+            alt="Card example background"
+            className="h-[200px] w-full object-cover"
+            src={post.imageUrl}
+          />
+        </CardBody>
 
-        <Image
-          removeWrapper
-          alt="Card example background"
-          className="h-[200px] w-full object-cover"
-          src={post.imageUrl}
-        />
         <CardFooter className="text-small justify-between mt-auto bg-[#a8b3cf33]">
           <div className="flex flex-row items-center justify-between w-full">
             <div className="flex flex-row items-center rounded-12 bg-surface-float">

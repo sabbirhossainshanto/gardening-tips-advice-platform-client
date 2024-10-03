@@ -36,7 +36,7 @@ export const useAddComment = () => {
 
 export const useGetAllComment = () => {
   return useQuery<any, Error, ICommentResponse>({
-    queryKey: ["get_comment"],
+    queryKey: ["get_comments"],
     queryFn: async () => await getAllComment(),
   });
 };

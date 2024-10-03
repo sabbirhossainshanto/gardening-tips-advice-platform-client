@@ -31,6 +31,8 @@ import CreatePost from "./modal/CreatePost";
 import ChangePassword from "./modal/ChangePassword";
 import { useChangePasswordModal } from "../store/showChangePassword";
 import { protectedRoute } from "../constant";
+import { useGetUpvoters } from "../hooks/post";
+import { useGetMe } from "../hooks/profile";
 
 export const Navbar = () => {
   const [changePassword, setChangePassword] = useChangePasswordModal();
@@ -38,7 +40,9 @@ export const Navbar = () => {
   const [showRegister] = useShowRegisterModal();
   const pathname = usePathname();
   const router = useRouter();
-  const { user, setIsLoading: setUserLoading } = useUser();
+  const { data: myData } = useGetMe();
+  const { user, setIsLoading: setUserLoading, setQuery } = useUser();
+  const { data: upvoters } = useGetUpvoters(user?.email as string);
 
   const handleLogout = () => {
     logOut();
@@ -50,13 +54,16 @@ export const Navbar = () => {
 
   const searchInput = (
     <Input
+      onChange={(e) =>
+        setQuery({ sort: "upvotes", searchTerm: e.target.value })
+      }
       aria-label="Search"
       classNames={{
         inputWrapper: "bg-default-100",
         input: "text-sm",
       }}
       labelPlacement="outside"
-      placeholder="Search..."
+      placeholder="Search Posts..."
       startContent={
         <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
       }
@@ -96,8 +103,17 @@ export const Navbar = () => {
                   </NextLink>
                 </NavbarItem>
               ))}
+              {upvoters?.data &&
+                upvoters?.data?.length > 0 &&
+                !myData?.data?.isVerified && (
+                  <NavbarItem key="verify">
+                    <NextLink className="text-success" href={"/verify-profile"}>
+                      Verify Account
+                    </NextLink>
+                  </NavbarItem>
+                )}
             </ul>
-            <CreatePost />
+            {user?.email && <CreatePost />}
           </NavbarContent>
 
           <NavbarContent
@@ -144,6 +160,32 @@ export const Navbar = () => {
                       Dashboard
                     </Link>
                   </NavbarMenuItem>
+                  <NavbarMenuItem key={`user-management`}>
+                    <Link
+                      color={
+                        pathname === "/dashboard/user-management"
+                          ? "primary"
+                          : "foreground"
+                      }
+                      href="/dashboard/user-management"
+                      size="lg"
+                    >
+                      User Management
+                    </Link>
+                  </NavbarMenuItem>
+                  <NavbarMenuItem key={`post-management`}>
+                    <Link
+                      color={
+                        pathname === "/dashboard/post-management"
+                          ? "primary"
+                          : "foreground"
+                      }
+                      href="/dashboard/post-management"
+                      size="lg"
+                    >
+                      Post Management
+                    </Link>
+                  </NavbarMenuItem>
                 </>
               ) : (
                 <>
@@ -154,6 +196,32 @@ export const Navbar = () => {
                       size="lg"
                     >
                       Profile
+                    </Link>
+                  </NavbarMenuItem>
+                  <NavbarMenuItem key={`profile`}>
+                    <Link
+                      color={
+                        pathname === "/profile/update-profile"
+                          ? "primary"
+                          : "foreground"
+                      }
+                      href="/profile/update-profile"
+                      size="lg"
+                    >
+                      Update Profile
+                    </Link>
+                  </NavbarMenuItem>
+                  <NavbarMenuItem key={`profile`}>
+                    <Link
+                      color={
+                        pathname === "/profile/favorite"
+                          ? "primary"
+                          : "foreground"
+                      }
+                      href="/profile/favorite"
+                      size="lg"
+                    >
+                      Favorite
                     </Link>
                   </NavbarMenuItem>
                 </>

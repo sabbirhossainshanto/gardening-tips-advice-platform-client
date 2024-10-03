@@ -8,7 +8,7 @@ const UserLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="relative">
       <Navbar />
-      <div className="grid grid-cols-12 border-t-1 border-gray-800 h-screen">
+      <div className="lg:grid grid-cols-12 lg:border-t-1 border-gray-800 h-screen">
         <UserSidebar />
         <main className="col-span-10">{children}</main>
       </div>

@@ -15,6 +15,7 @@ export default function GTInput({
   name,
   endContent,
   startContent,
+  readonly,
 }: IProps) {
   const {
     register,
@@ -26,12 +27,13 @@ export default function GTInput({
       endContent={endContent}
       startContent={startContent}
       {...register(name)}
-      errorMessage={errors[name] ? (errors[name].message as string) : ""}
-      isInvalid={!!errors[name]}
+      errorMessage={errors?.[name] ? (errors?.[name]?.message as string) : ""}
+      isInvalid={!!errors?.[name]}
       variant={variant}
       size={size}
       required={required}
       type={type}
+      readOnly={readonly}
       label={label}
     />
   );

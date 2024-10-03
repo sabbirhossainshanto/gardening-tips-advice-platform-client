@@ -2,7 +2,12 @@
 "use client";
 import { usePDF } from "react-to-pdf";
 import { IPost, IUpdateVote } from "@/src/types";
-import { Card as NextUiCard, CardHeader, CardFooter } from "@nextui-org/card";
+import {
+  Card as NextUiCard,
+  CardHeader,
+  CardFooter,
+  CardBody,
+} from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
 import {
   Bookmark,
@@ -25,6 +30,7 @@ import { useState } from "react";
 import Comment from "../Comment/Comment";
 import handleCopyPostURL from "@/src/utils/handleCopyPostURL";
 import PostUser from "./PostUser";
+import { FaFilePdf } from "react-icons/fa6";
 
 const SinglePost = ({ post }: { post: IPost }) => {
   const { toPDF, targetRef } = usePDF({ filename: "post.pdf" });
@@ -32,8 +38,8 @@ const SinglePost = ({ post }: { post: IPost }) => {
   const queryClient = useQueryClient();
   const {
     mutate: addComment,
-    isPending: isCommentSuccess,
-    isSuccess: isCommentPending,
+    isPending: isCommentPending,
+    isSuccess: isCommentSuccess,
   } = useAddComment();
   const { user } = useUser();
   const { data } = useGetMe();
@@ -42,18 +48,26 @@ const SinglePost = ({ post }: { post: IPost }) => {
   const { mutate: addToBookmark } = useAddBookmark();
   const { data: commentData } = useGetAllComment();
 
-  const favoritesPost: string[] = data?.data?.favorites?.map(
+  const favoritesPost: string[] | undefined = data?.data?.favorites?.map(
     (post: IPost) => post._id
   );
 
   const handleVoteUpdate = (voteType: "upvote" | "downvote") => {
     if (user?.email) {
-      const votePayload: IUpdateVote = {
-        postId: post?._id as string,
-        userId: user?._id as string,
-        voteType,
-      };
-      handleAddVote(votePayload);
+      if (user?._id !== post?.user?._id) {
+        const votePayload: IUpdateVote = {
+          postId: post?._id as string,
+          userId: user?._id as string,
+          voteType,
+        };
+        handleAddVote(votePayload, {
+          onSuccess() {
+            queryClient.invalidateQueries({ queryKey: ["upvoters"] });
+          },
+        });
+      } else {
+        toast.error(`You can ${voteType} on your post!`);
+      }
     } else {
       toast.error(`Please login to ${voteType} the post!`);
     }
@@ -65,14 +79,18 @@ const SinglePost = ({ post }: { post: IPost }) => {
 
   const handleAddBookmark = (id: string) => {
     if (user?.email) {
-      addToBookmark(
-        { postId: id },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["user"] });
-          },
-        }
-      );
+      if (user?._id !== post?.user?._id) {
+        addToBookmark(
+          { postId: id },
+          {
+            onSuccess: () => {
+              queryClient.invalidateQueries({ queryKey: ["user"] });
+            },
+          }
+        );
+      } else {
+        toast.error("You cant bookmark your post!");
+      }
     } else {
       toast.error("Please login to bookmark the post!");
     }
@@ -81,12 +99,20 @@ const SinglePost = ({ post }: { post: IPost }) => {
   const handleAddComment = (id: string) => {
     if (user?.email) {
       if (comment) {
-        const commentData = {
-          comment,
-          post: id,
-          user: user?._id,
-        };
-        addComment(commentData);
+        if (user?._id !== post?.user?._id) {
+          const commentData = {
+            comment,
+            post: id,
+            user: user?._id,
+          };
+          addComment(commentData, {
+            onSuccess() {
+              queryClient.invalidateQueries({ queryKey: ["get_comments"] });
+            },
+          });
+        } else {
+          toast.error("You cant comment on your post!");
+        }
       } else {
         toast.error("Please enter a comment!");
       }
@@ -101,7 +127,7 @@ const SinglePost = ({ post }: { post: IPost }) => {
   const isUserDownVoted = post?.downvotes?.find(
     (downvote) => downvote._id === user?._id
   );
-
+  const contentHTML = { __html: post?.content };
   return (
     <>
       <div className="md:grid md:grid-cols-12 gap-4">
@@ -112,18 +138,24 @@ const SinglePost = ({ post }: { post: IPost }) => {
             className=" w-full p-3 border border-gray-700"
           >
             <CardHeader className="flex-col items-start">
-              <h4 className="mt-2  p-1 text-2xl font-medium ">{post.title}</h4>
+              <h4 className="mt-2  p-1 text-2xl font-medium ">{post?.title}</h4>
               <p className="absolute -top-0 right-1  px-2 text-tiny uppercase">
                 {user?._id === post?.user?._id && "My Post"}
               </p>
             </CardHeader>
+            <CardBody>
+              <div
+                className="post-card mb-5"
+                dangerouslySetInnerHTML={contentHTML}
+              />
+              <Image
+                removeWrapper
+                alt="Card example background"
+                className="h-[200px] w-full object-cover"
+                src={post?.imageUrl}
+              />
+            </CardBody>
 
-            <Image
-              removeWrapper
-              alt="Card example background"
-              className="h-[200px] w-full object-cover"
-              src={post.imageUrl}
-            />
             <CardFooter className="text-small justify-between mt-auto bg-[#a8b3cf33]">
               <div className="flex flex-row items-center justify-between w-full">
                 <div className="flex flex-row items-center rounded-12 bg-surface-float">
@@ -198,7 +230,9 @@ const SinglePost = ({ post }: { post: IPost }) => {
                     />
                   </svg>
                 </button>
-                <button onClick={() => toPDF()}>Download PDF</button>
+                <button onClick={() => toPDF()}>
+                  <FaFilePdf size={17} />
+                </button>
                 {user?._id === post?.user?._id || user?.role === "ADMIN" ? (
                   <button
                     onClick={() => handleDeletePost(post?._id)}
