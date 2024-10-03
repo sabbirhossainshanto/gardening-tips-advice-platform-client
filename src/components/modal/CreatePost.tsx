@@ -22,8 +22,11 @@ import { Button, Checkbox } from "@nextui-org/react";
 import { useCreatePost } from "@/src/hooks/post";
 import { useUser } from "@/src/context/user.provider";
 import { useQueryClient } from "@tanstack/react-query";
+import { PlusIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const CreatePost = () => {
+  const pathname = usePathname();
   const [uploadingImage, setUploadingImage] = useState(false);
   const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
@@ -117,6 +120,7 @@ const CreatePost = () => {
       ...data,
       content,
     };
+    console.log(data);
     createPost(postData, {
       onSuccess() {
         setLoading(false);
@@ -171,7 +175,12 @@ const CreatePost = () => {
 
   return (
     <>
-      <Button onPress={() => setShowModal(true)}>Create Post</Button>
+      <Button
+        variant={pathname.startsWith("/profile") ? "light" : "bordered"}
+        onPress={() => setShowModal(true)}
+      >
+        Create Post <PlusIcon size={18} />
+      </Button>
       <Modal
         size="5xl"
         scrollBehavior="inside"

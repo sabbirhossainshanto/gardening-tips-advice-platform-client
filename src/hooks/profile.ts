@@ -15,8 +15,8 @@ export const useUpdateProfile = () => {
   return useMutation<any, Error, FieldValues>({
     mutationKey: ["update_profile"],
     mutationFn: async (userData) => await updateProfile(userData),
-    onSuccess: () => {
-      toast.success("Profile updated successful!");
+    onSuccess: (data) => {
+      toast.success(data?.message);
     },
     onError: (error) => {
       toast.error(error.message);

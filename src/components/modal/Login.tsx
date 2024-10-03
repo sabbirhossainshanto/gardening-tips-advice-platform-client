@@ -21,16 +21,22 @@ import { loginValidationSchema } from "@/src/schemas/login.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useShowRegisterModal } from "@/src/store/showRegister";
 import { useShowLoginModal } from "@/src/store/showLogin";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Login = () => {
+  const queryClient = useQueryClient();
   const [_showRegister, setShowRegister] = useShowRegisterModal();
   const [showLogin, setShowLogin] = useShowLoginModal();
 
-  const { setIsLoading: userLoading } = useUser();
+  const { setIsLoading: userLoading, query } = useUser();
 
   const { mutate: handleLogin, isPending, isSuccess } = useUserLogin();
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    handleLogin(data);
+    handleLogin(data, {
+      onSuccess() {
+        queryClient.invalidateQueries({ queryKey: [`GET_ALL_POST`, query] });
+      },
+    });
     userLoading(true);
   };
 

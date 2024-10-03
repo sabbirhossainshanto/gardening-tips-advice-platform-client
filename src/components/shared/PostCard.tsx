@@ -51,7 +51,9 @@ const PostCard = ({ post }: { post: IPost }) => {
         };
         handleAddVote(votePayload, {
           onSuccess() {
-            queryClient.invalidateQueries({ queryKey: ["upvoters"] });
+            queryClient.invalidateQueries({
+              queryKey: [`GET_ALL_POST`, query],
+            });
           },
         });
       } else {
@@ -64,7 +66,7 @@ const PostCard = ({ post }: { post: IPost }) => {
 
   const handleDeletePost = (id: string) => {
     deletePost(id, {
-      onSuccess(data, variables, context) {
+      onSuccess() {
         queryClient.invalidateQueries({ queryKey: [`GET_ALL_POST`, query] });
       },
     });
@@ -111,6 +113,9 @@ const PostCard = ({ post }: { post: IPost }) => {
       >
         <CardHeader className="flex-col items-start">
           <h4 className="mt-2  p-1 text-2xl font-medium ">{post.title}</h4>
+          <p className="absolute top-0 left-1  px-2 text-tiny uppercase text-success">
+            {post?.isPremium && "Premium"}
+          </p>
           <p className="absolute -top-0 right-1  px-2 text-tiny uppercase">
             {user?._id === post?.user?._id && "My Post"}
           </p>

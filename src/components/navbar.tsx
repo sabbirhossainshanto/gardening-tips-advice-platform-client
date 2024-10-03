@@ -113,7 +113,7 @@ export const Navbar = () => {
                   </NavbarItem>
                 )}
             </ul>
-            {user?.email && <CreatePost />}
+            {user?.email && pathname.startsWith("/profile") && <CreatePost />}
           </NavbarContent>
 
           <NavbarContent

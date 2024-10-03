@@ -11,6 +11,7 @@ export const registerUser = async (payload: FieldValues) => {
     if (data?.success) {
       cookies().set("accessToken", data?.data?.accessToken);
       cookies().set("refreshToken", data?.data?.refreshToken);
+      return data;
     } else {
       throw new Error(data?.message);
     }
@@ -25,6 +26,7 @@ export const loginUser = async (payload: FieldValues) => {
     if (data?.success) {
       cookies().set("accessToken", data?.data?.accessToken);
       cookies().set("refreshToken", data?.data?.refreshToken);
+      return data;
     } else {
       throw new Error(data?.message);
     }

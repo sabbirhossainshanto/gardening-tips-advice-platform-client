@@ -28,6 +28,20 @@ const AdminSidebar = () => {
         <GalleryThumbnails size={18} />
         <span>Post Management</span>
       </Link>
+      <Link
+        href="/dashboard/payment-history"
+        className={`flex items-center gap-3 hover-nav-item px-3 py-2 ${pathname === "/dashboard/payment-history" ? "bg-[#a8b3cf33]" : ""}`}
+      >
+        <GalleryThumbnails size={18} />
+        <span>Payment History</span>
+      </Link>
+      <Link
+        href="/dashboard/profile-update"
+        className={`flex items-center gap-3 hover-nav-item px-3 py-2 ${pathname === "/dashboard/profile-update" ? "bg-[#a8b3cf33]" : ""}`}
+      >
+        <GalleryThumbnails size={18} />
+        <span>Profile Update</span>
+      </Link>
     </div>
   );
 };

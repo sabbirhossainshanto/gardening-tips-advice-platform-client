@@ -15,18 +15,18 @@ import GTInput from "../form/GTInput";
 import GTForm from "../form/GTForm";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import { useUser } from "@/src/context/user.provider";
-import { useUserLogin, useUserRegister } from "@/src/hooks/auth";
+import { useUserRegister } from "@/src/hooks/auth";
 import { useEffect } from "react";
-import { loginValidationSchema } from "@/src/schemas/login.validation";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useShowRegisterModal } from "@/src/store/showRegister";
 import { useShowLoginModal } from "@/src/store/showLogin";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Register = () => {
+  const queryClient = useQueryClient();
   const [_showLogin, setShowLogin] = useShowLoginModal();
   const [showRegister, setShowRegister] = useShowRegisterModal();
-  const { setIsLoading: userLoading } = useUser();
+  const { setIsLoading: userLoading, query } = useUser();
 
   const { mutate: handleRegister, isPending, isSuccess } = useUserRegister();
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
@@ -38,13 +38,17 @@ const Register = () => {
       profilePhoto:
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
     };
-    handleRegister(registerData);
+    handleRegister(registerData, {
+      onSuccess() {
+        queryClient.invalidateQueries({ queryKey: [`GET_ALL_POST`, query] });
+      },
+    });
     userLoading(true);
   };
 
   useEffect(() => {
     if (!isPending && isSuccess) {
-        setShowRegister(false);
+      setShowRegister(false);
     }
   }, [isPending, isSuccess]);
 
