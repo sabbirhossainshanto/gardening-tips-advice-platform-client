@@ -1,3 +1,7 @@
+## Unique Feature: My Garden Journal
+
+The **My Garden Journal** feature allows users to track their gardening activities and progress over time. Users can log daily or weekly entries, document plant growth, and attach images of their garden's evolution. They can mark milestones like first blooms or harvests and create a personalized gardening timeline. Journals are private by default, but users can choose to share specific entries with the community, adding a personal touch to the gardening experience.
+
 # Next.js & NextUI Template
 
 This is a template for creating applications using Next.js 14 (app directory) and NextUI (v2).

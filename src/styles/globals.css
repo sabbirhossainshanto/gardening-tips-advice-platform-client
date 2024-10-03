@@ -44,3 +44,18 @@
 .ql-editor p {
   min-height: 70px !important;
 }
+
+.quote-section {
+  background-color: #f0f8e0;
+  padding: 20px;
+  border-radius: 10px;
+  font-family: "Georgia", serif;
+}
+
+.quote-section h2 {
+  color: #3b3a30;
+}
+
+.quote-section p {
+  color: #2e6f44;
+}

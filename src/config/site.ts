@@ -11,7 +11,11 @@ export const siteConfig = {
 
     {
       label: "About",
-      href: "/about",
+      href: "/about-us",
+    },
+    {
+      label: "Contact",
+      href: "/contact-us",
     },
   ],
   navMenuItems: [

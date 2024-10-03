@@ -28,6 +28,13 @@ const UserSidebar = () => {
         <User size={18} />
         <span>Favorite</span>
       </Link>
+      <Link
+        href="/profile/garden-journal"
+        className={`flex items-center gap-3 hover-nav-item px-3 py-2 ${pathname === "/profile/garden-journal" ? "bg-[#a8b3cf33]" : ""}`}
+      >
+        <User size={18} />
+        <span>Garden Journal</span>
+      </Link>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 "use client";
 import GardeningImageGallery from "@/src/components/GardeningImageGallery";
+import GardeningQuotes from "@/src/components/GardeningQuotes";
 import CreatePost from "@/src/components/modal/CreatePost";
 import PostCard from "@/src/components/shared/PostCard";
 import SortByUpVotes from "@/src/components/ui/SortByUpVotes/SortByUpVotes";
@@ -36,6 +37,7 @@ export default function Home() {
           </p>
         </div>
         <GardeningImageGallery />
+        <GardeningQuotes />
       </div>
     </section>
   );
