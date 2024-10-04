@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { IUpdateUserData, IUser } from "../types";
-import { getAllUsers, updateUser } from "../services/User";
+import { IResponse, IUpdateUserData, IUser, IUserStats } from "../types";
+import { getAllUsers, getMonthlyStats, updateUser } from "../services/User";
 import { toast } from "sonner";
 
 interface IUsersResponseType {
@@ -25,5 +25,12 @@ export const useUpdateUser = () => {
     onError: (error) => {
       toast.error(error.message);
     },
+  });
+};
+
+export const useGetMonthlyStats = () => {
+  return useQuery<IResponse<IUserStats>>({
+    queryKey: ["monthly_stats"],
+    queryFn: async () => await getMonthlyStats(),
   });
 };

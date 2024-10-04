@@ -6,6 +6,7 @@ import {
   getAllPost,
   getSinglePost,
   getUpvotersForMyPosts,
+  updatePost,
   upvoteOrDownvote,
 } from "../services/Post";
 import { IPost, IUpdateVote, IUser } from "../types";
@@ -26,6 +27,19 @@ export const useCreatePost = () => {
   return useMutation<any, Error, any>({
     mutationKey: ["CREATE_POST"],
     mutationFn: async (payload: Partial<IPost>) => await createPost(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+};
+
+export const useUpdatePost = () => {
+  return useMutation<any, Error, any>({
+    mutationKey: ["Update_POST"],
+    mutationFn: async (payload: any) => await updatePost(payload),
     onSuccess: (data) => {
       toast.success(data?.message);
     },

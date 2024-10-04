@@ -11,7 +11,7 @@ import {
 } from "@nextui-org/react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import "react-quill/dist/quill.snow.css"; // Quill styles
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import ReactQuill from "react-quill";
 import { useForm } from "react-hook-form";
@@ -19,24 +19,30 @@ import "react-quill/dist/quill.snow.css";
 
 import { Input } from "@nextui-org/input";
 import { Button, Checkbox } from "@nextui-org/react";
-import { useCreatePost } from "@/src/hooks/post";
+import {
+  useCreatePost,
+  useGetSInglePost,
+  useUpdatePost,
+} from "@/src/hooks/post";
 import { useUser } from "@/src/context/user.provider";
 import { useQueryClient } from "@tanstack/react-query";
-import { PlusIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useShowUpdatePostModal } from "@/src/store/updatePostModal";
+import { IPost } from "@/src/types";
 
-const CreatePost = () => {
+const UpdatePost = ({ post }: { post: IPost }) => {
+  const { mutate: updatePost } = useUpdatePost();
+  const { data: singlePost } = useGetSInglePost(post?._id);
   const pathname = usePathname();
   const [uploadingImage, setUploadingImage] = useState(false);
   const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useShowUpdatePostModal();
   const [image, setImage] = useState<File>();
   const { user, query } = useUser();
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState("<p>dfddfdfdfdf</p>");
   const { mutate: createPost } = useCreatePost();
-  const { register, handleSubmit } = useForm();
-
+  const { register, handleSubmit, reset } = useForm();
   const quillRef = useRef<ReactQuill>(null);
 
   const handleChange = (content: string) => {
@@ -113,15 +119,20 @@ const CreatePost = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setLoading(true);
-    const imageUrl = await uploadToCloudinary(image as File, "image");
-    const postData = {
-      user: user?._id,
-      imageUrl,
-      ...data,
-      content,
+    let postData: any = {
+      id: singlePost?.data?._id,
+      data: {
+        ...data,
+        content,
+      },
     };
-    console.log(postData);
-    createPost(postData, {
+    if (image) {
+      const imageUrl = await uploadToCloudinary(image as File, "image");
+      postData.data.imageUrl = imageUrl;
+    }
+
+    console.log(data);
+    updatePost(postData, {
       onSuccess() {
         setLoading(false);
         queryClient.invalidateQueries({ queryKey: [`GET_ALL_POST`, query] });
@@ -172,15 +183,25 @@ const CreatePost = () => {
       },
     },
   };
+
+  useEffect(() => {
+    if (singlePost?.data) {
+      reset({
+        title: singlePost?.data?.title,
+        category: singlePost?.data?.category,
+        description: singlePost?.data?.description,
+        isPremium: singlePost?.data?.isPremium,
+      });
+      setContent(singlePost?.data?.content);
+    }
+  }, [singlePost]);
+
+  if (!singlePost?.data) {
+    return null;
+  }
   console.log(content);
   return (
     <>
-      <Button
-        variant={pathname.startsWith("/profile") ? "light" : "bordered"}
-        onPress={() => setShowModal(true)}
-      >
-        Create Post <PlusIcon size={18} />
-      </Button>
       <Modal
         size="5xl"
         scrollBehavior="inside"
@@ -206,7 +227,7 @@ const CreatePost = () => {
                 <ModalBody>
                   <ReactQuill
                     theme="snow"
-                    //   //   value={value}
+                    value={content}
                     ref={quillRef}
                     onChange={handleChange}
                     modules={modules}
@@ -266,4 +287,4 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;
+export default UpdatePost;

@@ -23,6 +23,18 @@ export const createPost = async (payload: Partial<IPost>) => {
   }
 };
 
+export const updatePost = async (payload: any) => {
+  try {
+    const { data }: any = await nexiosInstance.put(
+      `/posts/update-post/${payload?.id}`,
+      payload.data
+    );
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 export const upvoteOrDownvote = async (payload: IUpdateVote) => {
   try {
     const { data }: NexiosResponse<ISinglePostResponseType> =

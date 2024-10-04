@@ -48,7 +48,7 @@ const PostDetails = ({ id }: { id: string }) => {
 
   const post = singlePost?.data;
 
-  const favoritesPost: string[] = data?.data?.favorites?.map(
+  const favoritesPost: string[] | undefined = data?.data?.favorites?.map(
     (post: IPost) => post._id
   );
 

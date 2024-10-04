@@ -30,3 +30,31 @@ export interface IUpdateUserData {
 }
 
 export type TUpdateType = "USER" | "ADMIN" | "ACTIVE" | "BLOCKED";
+
+export interface IUserStats {
+  userStats: UserStats;
+  postStats: PostStats;
+  verifiedUserStats: VerifiedUserStats;
+}
+
+export interface UserStats {
+  totalUsers: number;
+  todayUsers: number;
+  lastSevenDaysUsers: number;
+  lastMonthUsers: number;
+}
+
+export interface PostStats {
+  totalPosts: number;
+  todayPosts: number;
+  lastSevenDaysPosts: number;
+  lastMonthPosts: number;
+}
+
+export interface VerifiedUserStats {
+  totalVerifiedUsers: number;
+  todayVerifiedUsers: number;
+  lastSevenDaysVerifiedUsers: number;
+  lastMonthVerifiedUsers: number;
+  totalVerifiedUserPayments: number;
+}

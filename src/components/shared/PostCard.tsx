@@ -1,7 +1,6 @@
 "use client";
 
 import { usePDF } from "react-to-pdf";
-import { FaFilePdf } from "react-icons/fa6";
 import { IPost, IUpdateVote } from "@/src/types";
 import {
   Card as NextUiCard,
@@ -19,14 +18,14 @@ import {
   FillUpVote,
   UpVote,
 } from "../icons";
-import { useAddBookmark, useAddVote, useDeletePost } from "@/src/hooks/post";
+import { useAddBookmark, useAddVote } from "@/src/hooks/post";
 import { useUser } from "@/src/context/user.provider";
-import { DeleteIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetMe } from "@/src/hooks/profile";
 import { useRouter } from "next/navigation";
-import handleCopyPostURL from "@/src/utils/handleCopyPostURL";
+import PostActions from "../modal/PostActions";
+import UpdatePost from "../modal/UpdatePost";
 
 const PostCard = ({ post }: { post: IPost }) => {
   const { toPDF, targetRef } = usePDF({ filename: "post.pdf" });
@@ -35,7 +34,7 @@ const PostCard = ({ post }: { post: IPost }) => {
   const { user, query } = useUser();
   const { data } = useGetMe();
   const { mutate: handleAddVote } = useAddVote();
-  const { mutate: deletePost } = useDeletePost();
+
   const { mutate: addToBookmark } = useAddBookmark();
 
   const favoritesPost: string[] | undefined =
@@ -62,14 +61,6 @@ const PostCard = ({ post }: { post: IPost }) => {
     } else {
       toast.error(`Please login to ${voteType} the post!`);
     }
-  };
-
-  const handleDeletePost = (id: string) => {
-    deletePost(id, {
-      onSuccess() {
-        queryClient.invalidateQueries({ queryKey: [`GET_ALL_POST`, query] });
-      },
-    });
   };
 
   const handleAddBookmark = (id: string) => {
@@ -106,6 +97,7 @@ const PostCard = ({ post }: { post: IPost }) => {
 
   return (
     <>
+      <UpdatePost post={post} />
       <NextUiCard
         ref={targetRef}
         isFooterBlurred
@@ -203,29 +195,8 @@ const PostCard = ({ post }: { post: IPost }) => {
                 {/**/}
               </button>
             </div>
-            <button onClick={() => handleCopyPostURL(post?._id)}>
-              <svg
-                width="1em"
-                height="1em"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-6 h-6 pointer-events-none"
-              >
-                <path
-                  d="M13.2 4.096a3.743 3.743 0 015.148-.137l.144.137 1.412 1.412a3.743 3.743 0 01.137 5.148l-.137.144-4.023 4.023a3.743 3.743 0 01-5.148.137l-.144-.137-.706-.706a.749.749 0 01.982-1.125l.076.067.706.705c.84.84 2.181.876 3.063.105l.113-.105 4.022-4.022c.84-.84.876-2.181.105-3.064l-.105-.112-1.411-1.411a2.246 2.246 0 00-3.063-.105l-.113.105L13.2 6.213a.749.749 0 01-1.126-.982l.067-.076L13.2 4.096zM8.119 9.177a3.743 3.743 0 015.148-.137l.144.137.706.706a.749.749 0 01-.982 1.125l-.076-.067-.706-.705a2.246 2.246 0 00-3.063-.105l-.113.105-4.022 4.022a2.246 2.246 0 00-.105 3.064l.105.112 1.411 1.411c.84.84 2.181.876 3.063.105l.113-.105 1.058-1.058a.749.749 0 011.126.982l-.067.076-1.059 1.059a3.743 3.743 0 01-5.148.137l-.144-.137-1.412-1.412a3.743 3.743 0 01-.137-5.148l.137-.144L8.12 9.177z"
-                  fill="currentcolor"
-                  fillRule="evenodd"
-                />
-              </svg>
-            </button>
-            <button onClick={() => toPDF()}>
-              <FaFilePdf size={17} />
-            </button>
-            {user?._id === post?.user?._id || user?.role === "ADMIN" ? (
-              <button onClick={() => handleDeletePost(post?._id)}>
-                <DeleteIcon className="text-[#e04337]" />
-              </button>
-            ) : null}
+
+            <PostActions post={post} toPDF={toPDF} />
           </div>
         </CardFooter>
       </NextUiCard>

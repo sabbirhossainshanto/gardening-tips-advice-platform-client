@@ -23,3 +23,12 @@ export const updateUser = async (payload: IUpdateUserData) => {
     throw new Error(error);
   }
 };
+
+export const getMonthlyStats = async () => {
+  try {
+    const { data }: any = await nexiosInstance.get(`/users/stats/monthly`);
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
