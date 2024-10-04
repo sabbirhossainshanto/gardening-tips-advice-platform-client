@@ -43,7 +43,6 @@ const CreateGardenJournal = () => {
 
   const handleSubmit = () => {
     // Handle the form submission logic here (save the journal entry)
-    console.log(entry);
   };
   return (
     <>

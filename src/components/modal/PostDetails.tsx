@@ -92,9 +92,7 @@ const PostDetails = ({ id }: { id: string }) => {
   const isUserDownVoted = post?.downvotes?.find(
     (downvote) => downvote._id === user?._id
   );
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
-  };
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {};
 
   return (
     <>

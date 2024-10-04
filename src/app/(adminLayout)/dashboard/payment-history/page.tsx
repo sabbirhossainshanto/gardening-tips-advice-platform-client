@@ -25,7 +25,7 @@ const columns = [
 
 export default function PaymentHistory() {
   const { data: paymentHistory, isLoading } = useGetPaymentHistory();
-  console.log(paymentHistory);
+
   const renderCell = React.useCallback((payHistory: any, columnKey: string) => {
     const cellValue = payHistory[columnKey as keyof IPaymentHistory];
 

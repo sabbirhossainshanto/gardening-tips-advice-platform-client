@@ -72,7 +72,7 @@ export const getSinglePost = async (id: string) => {
   try {
     const { data }: NexiosResponse<ISinglePostResponseType> =
       await nexiosInstance.get(`/posts/${id}`);
-    // console.log("single post", data);
+
     return data;
   } catch (error: any) {
     throw new Error(error);
@@ -95,7 +95,7 @@ export const getAllPost = async (query: any) => {
     const { data }: any = await nexiosInstance.get(`/posts`, {
       params,
     });
-    // console.log("single post", data);
+
     return data;
   } catch (error: any) {
     throw new Error(error);
@@ -105,6 +105,15 @@ export const getAllPost = async (query: any) => {
 export const getUpvotersForMyPosts = async () => {
   try {
     const { data }: any = await nexiosInstance.get(`/posts/users/upvoters`);
+
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+export const getMyMyPosts = async () => {
+  try {
+    const { data }: any = await nexiosInstance.get(`/posts/get-my-post`);
 
     return data;
   } catch (error: any) {

@@ -3,7 +3,7 @@
 import Loading from "@/src/components/shared/Loading";
 import { useGetMonthlyStats } from "@/src/hooks/user";
 
-import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
+import { Card, CardBody } from "@nextui-org/react";
 
 const Dashboard = () => {
   const { data, isLoading } = useGetMonthlyStats();
@@ -13,7 +13,7 @@ const Dashboard = () => {
   }
 
   if (!data?.data) {
-    return;
+    return null;
   }
 
   const { postStats, userStats, verifiedUserStats } = data?.data;

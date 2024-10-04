@@ -10,12 +10,11 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
-import "react-quill/dist/quill.snow.css"; // Quill styles
 import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import ReactQuill from "react-quill";
+// import ReactQuill from "react-quill";
 import { useForm } from "react-hook-form";
-import "react-quill/dist/quill.snow.css";
+// import "react-quill/dist/quill.snow.css";
 
 import { Input } from "@nextui-org/input";
 import { Button, Checkbox } from "@nextui-org/react";
@@ -44,7 +43,7 @@ const UpdatePost = ({ post }: { post: IPost }) => {
   const [content, setContent] = useState("<p>dfddfdfdfdf</p>");
   const { mutate: createPost } = useCreatePost();
   const { register, handleSubmit, reset } = useForm();
-  const quillRef = useRef<ReactQuill>(null);
+  // const quillRef = useRef<ReactQuill>(null);
 
   const handleChange = (content: string) => {
     setContent(content);
@@ -71,45 +70,45 @@ const UpdatePost = ({ post }: { post: IPost }) => {
     }
   };
 
-  const handleImageUpload = useCallback(() => {
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", "image/*");
-    input.click();
+  // const handleImageUpload = useCallback(() => {
+  //   const input = document.createElement("input");
+  //   input.setAttribute("type", "file");
+  //   input.setAttribute("accept", "image/*");
+  //   input.click();
 
-    input.onchange = async () => {
-      const file = input.files ? input.files[0] : null;
-      if (file) {
-        setUploadingImage(true);
-        const imageUrl = await uploadToCloudinary(file, "image");
-        setUploadingImage(false);
-        if (imageUrl) {
-          const quill = quillRef.current!.getEditor();
-          const range = quill.getSelection(true);
-          quill.insertEmbed(range.index, "image", imageUrl, "user");
-        }
-      }
-    };
-  }, []);
+  //   input.onchange = async () => {
+  //     const file = input.files ? input.files[0] : null;
+  //     if (file) {
+  //       setUploadingImage(true);
+  //       const imageUrl = await uploadToCloudinary(file, "image");
+  //       setUploadingImage(false);
+  //       if (imageUrl) {
+  //         const quill = quillRef.current!.getEditor();
+  //         const range = quill.getSelection(true);
+  //         quill.insertEmbed(range.index, "image", imageUrl, "user");
+  //       }
+  //     }
+  //   };
+  // }, []);
 
-  const handleVideoUpload = () => {
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", "video/*");
-    input.click();
+  // const handleVideoUpload = () => {
+  //   const input = document.createElement("input");
+  //   input.setAttribute("type", "file");
+  //   input.setAttribute("accept", "video/*");
+  //   input.click();
 
-    input.onchange = async () => {
-      const file = input.files ? input.files[0] : null;
-      if (file) {
-        const videoUrl = await uploadToCloudinary(file, "video");
-        if (videoUrl) {
-          const quill = quillRef.current!.getEditor();
-          const range = quill.getSelection(true);
-          quill.insertEmbed(range.index, "video", videoUrl, "user");
-        }
-      }
-    };
-  };
+  //   input.onchange = async () => {
+  //     const file = input.files ? input.files[0] : null;
+  //     if (file) {
+  //       const videoUrl = await uploadToCloudinary(file, "video");
+  //       if (videoUrl) {
+  //         const quill = quillRef.current!.getEditor();
+  //         const range = quill.getSelection(true);
+  //         quill.insertEmbed(range.index, "video", videoUrl, "user");
+  //       }
+  //     }
+  //   };
+  // };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -134,7 +133,6 @@ const UpdatePost = ({ post }: { post: IPost }) => {
       postData.data.imageUrl = imageUrl;
     }
 
-    console.log(data);
     updatePost(postData, {
       onSuccess() {
         setLoading(false);
@@ -177,15 +175,15 @@ const UpdatePost = ({ post }: { post: IPost }) => {
     ["clean"],
   ];
 
-  const modules = {
-    toolbar: {
-      container: toolbar,
-      handlers: {
-        image: handleImageUpload,
-        // video: handleVideoUpload,
-      },
-    },
-  };
+  // const modules = {
+  //   toolbar: {
+  //     container: toolbar,
+  //     handlers: {
+  //       image: handleImageUpload,
+  //       // video: handleVideoUpload,
+  //     },
+  //   },
+  // };
 
   useEffect(() => {
     if (singlePost?.data) {
@@ -202,7 +200,7 @@ const UpdatePost = ({ post }: { post: IPost }) => {
   if (!singlePost?.data) {
     return null;
   }
-  console.log(content);
+
   return (
     <>
       <Modal
@@ -228,14 +226,14 @@ const UpdatePost = ({ post }: { post: IPost }) => {
                 </ModalHeader>
 
                 <ModalBody>
-                  <ReactQuill
+                  {/* <ReactQuill
                     theme="snow"
                     value={content}
                     ref={quillRef}
                     onChange={handleChange}
                     modules={modules}
                     formats={formats}
-                  />
+                  /> */}
                   <div className="mt-5 space-y-3">
                     <Input
                       {...register("title", { required: true })}

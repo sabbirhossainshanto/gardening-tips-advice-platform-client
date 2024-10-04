@@ -4,6 +4,7 @@ import {
   createPost,
   deletePost,
   getAllPost,
+  getMyMyPosts,
   getSinglePost,
   getUpvotersForMyPosts,
   updatePost,
@@ -108,5 +109,11 @@ export const useGetUpvoters = (email: string) => {
     queryKey: [`upvoters`],
     enabled: email ? true : false,
     queryFn: async () => await getUpvotersForMyPosts(),
+  });
+};
+export const useGetMyPost = () => {
+  return useQuery<any, Error, any>({
+    queryKey: [`get_my_posts`],
+    queryFn: async () => await getMyMyPosts(),
   });
 };

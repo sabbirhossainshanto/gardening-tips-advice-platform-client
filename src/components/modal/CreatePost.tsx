@@ -8,16 +8,10 @@ import {
   ModalBody,
   ModalFooter,
   Spinner,
-  Image,
 } from "@nextui-org/react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
-import "react-quill/dist/quill.snow.css"; // Quill styles
-import { useCallback, useRef, useState } from "react";
-import axios from "axios";
-import ReactQuill from "react-quill";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import "react-quill/dist/quill.snow.css";
-
 import { Input } from "@nextui-org/input";
 import { Button, Checkbox } from "@nextui-org/react";
 import { useCreatePost } from "@/src/hooks/post";
@@ -25,6 +19,8 @@ import { useUser } from "@/src/context/user.provider";
 import { useQueryClient } from "@tanstack/react-query";
 import { PlusIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
+import Editor from "../ui/Editor/Editor";
+import { uploadToCloudinary } from "@/src/utils/uploadToCloudinary";
 
 const CreatePost = () => {
   const pathname = usePathname();
@@ -38,73 +34,6 @@ const CreatePost = () => {
   const [content, setContent] = useState("");
   const { mutate: createPost } = useCreatePost();
   const { register, handleSubmit } = useForm();
-
-  const quillRef = useRef<ReactQuill>(null);
-
-  const handleChange = (content: string) => {
-    setContent(content);
-  };
-
-  const uploadToCloudinary = async (file: File, type: string) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append(
-      "upload_preset",
-      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!
-    );
-
-    try {
-      // https://api.cloudinary.com/v1_1/daar91zv4/upload
-      const response = await axios.post(
-        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/${type}/upload`,
-        formData
-      );
-      return response.data.secure_url;
-    } catch (error) {
-      console.error("Cloudinary upload error:", error);
-      return null;
-    }
-  };
-
-  const handleImageUpload = useCallback(() => {
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", "image/*");
-    input.click();
-
-    input.onchange = async () => {
-      const file = input.files ? input.files[0] : null;
-      if (file) {
-        setUploadingImage(true);
-        const imageUrl = await uploadToCloudinary(file, "image");
-        setUploadingImage(false);
-        if (imageUrl) {
-          const quill = quillRef.current!.getEditor();
-          const range = quill.getSelection(true);
-          quill.insertEmbed(range.index, "image", imageUrl, "user");
-        }
-      }
-    };
-  }, []);
-
-  const handleVideoUpload = () => {
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", "video/*");
-    input.click();
-
-    input.onchange = async () => {
-      const file = input.files ? input.files[0] : null;
-      if (file) {
-        const videoUrl = await uploadToCloudinary(file, "video");
-        if (videoUrl) {
-          const quill = quillRef.current!.getEditor();
-          const range = quill.getSelection(true);
-          quill.insertEmbed(range.index, "video", videoUrl, "user");
-        }
-      }
-    };
-  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -127,7 +56,6 @@ const CreatePost = () => {
       postData.imageUrl = imageUrl;
     }
 
-    console.log(postData);
     createPost(postData, {
       onSuccess() {
         setLoading(false);
@@ -140,46 +68,6 @@ const CreatePost = () => {
     });
   };
 
-  /* Quill config */
-  const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-    "color",
-    "code-block",
-  ];
-
-  const toolbar = [
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    ["bold", "italic", "underline", "code-block"],
-    ["link", "image"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    [{ indent: "-1" }, { indent: "+1" }],
-    [{ direction: "rtl" }],
-    [{ color: [] }, { background: [] }],
-    [{ font: [] }],
-    [{ align: [] }],
-    ["clean"],
-  ];
-
-  const modules = {
-    toolbar: {
-      container: toolbar,
-      handlers: {
-        image: handleImageUpload,
-        // video: handleVideoUpload,
-      },
-    },
-  };
-  console.log(content);
   return (
     <>
       <Button
@@ -189,7 +77,7 @@ const CreatePost = () => {
         Create Post <PlusIcon size={18} />
       </Button>
       <Modal
-        size="5xl"
+        size="full"
         scrollBehavior="inside"
         isOpen={showModal}
         onOpenChange={() => setShowModal(false)}
@@ -211,14 +99,7 @@ const CreatePost = () => {
                 </ModalHeader>
 
                 <ModalBody>
-                  <ReactQuill
-                    theme="snow"
-                    //   //   value={value}
-                    ref={quillRef}
-                    onChange={handleChange}
-                    modules={modules}
-                    formats={formats}
-                  />
+                  <Editor content={content} setContent={setContent} />
                   <div className="mt-5 space-y-3">
                     <Input
                       {...register("title", { required: true })}

@@ -17,12 +17,11 @@ const ContactUs = () => {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     toast.success(
       "Thank you! We received your message... We will contact with you soon!"
     );
-    console.log({ name, email, subject, message });
   };
 
   return (

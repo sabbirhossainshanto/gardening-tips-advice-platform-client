@@ -1,7 +1,14 @@
-import UpdateProfile from "@/src/components/ui/ProfileUpdate/ProfileUpdate";
+import dynamic from "next/dynamic";
 
-const ProfileUpdate = () => {
-  return <UpdateProfile />;
+const ProfileUpdate = dynamic(
+  () => import("@/src/components/ui/ProfileUpdate/ProfileUpdate"),
+  {
+    ssr: false,
+  }
+);
+
+const UpdateProfile = () => {
+  return <ProfileUpdate />;
 };
 
-export default ProfileUpdate;
+export default UpdateProfile;

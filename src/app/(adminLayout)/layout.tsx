@@ -1,3 +1,5 @@
+"use client";
+
 import React, { ReactNode } from "react";
 import { Navbar } from "@/src/components/navbar";
 import AdminSidebar from "@/src/components/shared/AdminSidebar";

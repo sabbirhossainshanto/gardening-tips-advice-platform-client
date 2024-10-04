@@ -23,9 +23,9 @@ const journalEntries = [
 export default function JournalEntryList() {
   return (
     <div>
-      <div className="py-2.5 flex justify-end">
+      {/* <div className="py-2.5 flex justify-end">
         <CreateGardenJournal />
-      </div>
+      </div> */}
       <div className="container-box grid justify-center gap-10 sm:grid-cols-1 md:grid-cols-2 p-5">
         {journalEntries.map((entry, index) => (
           <div key={index}>
