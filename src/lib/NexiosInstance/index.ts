@@ -4,8 +4,8 @@ import { cookies } from "next/headers";
 
 // Default configuration for Nexios
 const defaultConfig: NexiosOptions = {
-  baseURL: "http://localhost:3000/api/v1",
-  // baseURL: "https://gardening-advice-platform.vercel.app/api/v1",
+  // baseURL: "http://localhost:3000/api/v1",
+  baseURL: "https://gardening-advice-platform.vercel.app/api/v1",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

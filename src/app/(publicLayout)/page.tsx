@@ -17,6 +17,7 @@ export default function Home() {
     searchTerm: debouncedSearchTerm,
   };
   const { data } = useGetAllPost(debouncedQuery);
+  console.log(data);
   return (
     <section className="flex flex-col items-center justify-center gap-4">
       <div className="flex justify-between w-full container-box">

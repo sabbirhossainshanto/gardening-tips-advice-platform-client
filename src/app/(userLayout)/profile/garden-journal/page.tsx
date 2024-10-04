@@ -29,7 +29,7 @@ export default function JournalEntryList() {
       <div className="container-box grid justify-center gap-10 sm:grid-cols-1 md:grid-cols-2 p-5">
         {journalEntries.map((entry, index) => (
           <div key={index}>
-            <Card isHoverable isPressable>
+            <Card>
               {entry.image && (
                 <Image
                   src={entry.image}

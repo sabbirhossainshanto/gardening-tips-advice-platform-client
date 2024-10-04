@@ -31,6 +31,7 @@ import { useShowUpdatePostModal } from "@/src/store/updatePostModal";
 import { IPost } from "@/src/types";
 
 const UpdatePost = ({ post }: { post: IPost }) => {
+  const [imagePreview, setImagePreview] = useState("");
   const { mutate: updatePost } = useUpdatePost();
   const { data: singlePost } = useGetSInglePost(post?._id);
   const pathname = usePathname();
@@ -113,7 +114,9 @@ const UpdatePost = ({ post }: { post: IPost }) => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (e.target.files) {
+      const image = URL.createObjectURL(e.target.files[0]);
       setImage(e.target.files[0]);
+      setImagePreview(image);
     }
   };
 
@@ -215,7 +218,7 @@ const UpdatePost = ({ post }: { post: IPost }) => {
               <>
                 <ModalHeader className="flex flex-col gap-1">
                   <div className="flex  items-center gap-10">
-                    <h1>Create a Post</h1>
+                    <h1>Update This Post</h1>
                     {uploadingImage && (
                       <p className="flex items-center gap-2 text-sm">
                         <span> Uploading Image</span> <Spinner size="sm" />
@@ -251,6 +254,25 @@ const UpdatePost = ({ post }: { post: IPost }) => {
                       name="imageUrl"
                       type="file"
                     />
+                    {imagePreview && (
+                      <div className="relative rounded-xl h-[300px] border-2 border-dashed border-default-300 p-2">
+                        <img
+                          alt="item"
+                          className="h-full w-full object-cover object-center rounded-md"
+                          src={imagePreview}
+                        />
+                      </div>
+                    )}
+
+                    {!imagePreview && singlePost?.data?.imageUrl && (
+                      <div className="relative rounded-xl h-[300px] border-2 border-dashed border-default-300 p-2">
+                        <img
+                          alt="item"
+                          className="h-full w-full object-cover object-center rounded-md"
+                          src={singlePost?.data?.imageUrl}
+                        />
+                      </div>
+                    )}
                     <Input
                       {...register("description")}
                       label="Description"
@@ -275,7 +297,7 @@ const UpdatePost = ({ post }: { post: IPost }) => {
                     Close
                   </Button>
                   <Button isLoading={loading} type="submit" color="primary">
-                    Create Post
+                    Update Post
                   </Button>
                 </ModalFooter>
               </>

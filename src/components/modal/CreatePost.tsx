@@ -8,6 +8,7 @@ import {
   ModalBody,
   ModalFooter,
   Spinner,
+  Image,
 } from "@nextui-org/react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import "react-quill/dist/quill.snow.css"; // Quill styles
@@ -32,6 +33,7 @@ const CreatePost = () => {
   const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState(false);
   const [image, setImage] = useState<File>();
+  const [imagePreview, setImagePreview] = useState("");
   const { user, query } = useUser();
   const [content, setContent] = useState("");
   const { mutate: createPost } = useCreatePost();
@@ -107,19 +109,24 @@ const CreatePost = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (e.target.files) {
+      const image = URL.createObjectURL(e.target.files[0]);
       setImage(e.target.files[0]);
+      setImagePreview(image);
     }
   };
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setLoading(true);
-    const imageUrl = await uploadToCloudinary(image as File, "image");
-    const postData = {
+    const postData: any = {
       user: user?._id,
-      imageUrl,
       ...data,
       content,
     };
+    if (image) {
+      const imageUrl = await uploadToCloudinary(image as File, "image");
+      postData.imageUrl = imageUrl;
+    }
+
     console.log(postData);
     createPost(postData, {
       onSuccess() {
@@ -230,6 +237,15 @@ const CreatePost = () => {
                       name="imageUrl"
                       type="file"
                     />
+                    {imagePreview && (
+                      <div className="relative rounded-xl h-[300px] border-2 border-dashed border-default-300 p-2">
+                        <img
+                          alt="item"
+                          className="h-full w-full object-cover object-center rounded-md"
+                          src={imagePreview}
+                        />
+                      </div>
+                    )}
                     <Input
                       {...register("description")}
                       label="Description"

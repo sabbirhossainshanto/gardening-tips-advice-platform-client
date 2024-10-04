@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-"use client";
-
 import { Card } from "@nextui-org/card";
 import { Input, Textarea } from "@nextui-org/input";
 import {

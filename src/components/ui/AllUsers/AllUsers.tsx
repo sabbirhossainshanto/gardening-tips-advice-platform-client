@@ -15,7 +15,7 @@ const AllUsers = () => {
       isFooterBlurred
       className="h-[400px] w-full p-3 border border-gray-700 overflow-y-scroll"
     >
-      <Tabs users={data?.data as IUser[]} myProfile={myProfile?.data} />
+      <Tabs users={data?.data as IUser[]} myProfile={myProfile?.data!} />
     </NextUiCard>
   );
 };

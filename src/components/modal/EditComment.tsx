@@ -31,7 +31,7 @@ const EditComment = ({
   const { user } = useUser();
   const { reset, register, handleSubmit } = useForm();
   const { data } = useGetSingleComment(commentId);
-  const { mutate: handleEditComment } = useEditComment();
+  const { mutate: handleEditComment, isSuccess, isPending } = useEditComment();
 
   const onSubmit: SubmitHandler<FieldValues> = (fieldValue) => {
     const editCommentData = {
@@ -101,7 +101,7 @@ const EditComment = ({
                     Close
                   </Button>
                   <Button
-                    // isLoading={isPending && !isSuccess ? true : false}
+                    isLoading={isPending && !isSuccess ? true : false}
                     type="submit"
                     color="primary"
                   >

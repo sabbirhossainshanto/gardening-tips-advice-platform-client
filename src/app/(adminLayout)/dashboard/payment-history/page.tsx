@@ -78,7 +78,11 @@ export default function PaymentHistory() {
   }
 
   if (!paymentHistory?.data || paymentHistory?.data?.length === 0) {
-    return <div>No users available</div>;
+    return (
+      <div className="flex items-center justify-center h-[50%]">
+        No payment history available!
+      </div>
+    );
   }
 
   return (

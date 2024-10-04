@@ -66,7 +66,7 @@ const ProfileUpdate = () => {
   };
 
   if (!data?.data) {
-    return;
+    return null;
   }
   return (
     <div>
