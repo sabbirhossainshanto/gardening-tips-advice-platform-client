@@ -14,33 +14,39 @@ import {
   ModalHeader,
   Spacer,
 } from "@nextui-org/react";
-import React, { useState } from "react";
-import { PlusIcon } from "lucide-react";
-import { useCreateGardenJournal } from "@/src/hooks/garden-journal";
+import React, { Dispatch, useEffect, useState } from "react";
+import { EditIcon } from "lucide-react";
+import {
+  useGetSingleGardenJournal,
+  useUpdateSingleGardenJournal,
+} from "@/src/hooks/garden-journal";
 import { uploadToCloudinary } from "@/src/utils/uploadToCloudinary";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/src/context/user.provider";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { SetStateAction } from "jotai";
 
-const CreateGardenJournal = () => {
+interface IProps {
+  id: string;
+  showUpdateModal: boolean;
+  setShowUpdateModal: Dispatch<SetStateAction<boolean>>;
+}
+
+const UpdateGardenJournal = ({
+  id,
+  setShowUpdateModal,
+  showUpdateModal,
+}: IProps) => {
+  const { data } = useGetSingleGardenJournal(id);
+  const { register, handleSubmit, reset } = useForm();
   const [loading, setLoading] = useState(false);
   const { user } = useUser();
   const queryClient = useQueryClient();
-  const { mutate: createGardenJournal } = useCreateGardenJournal();
-  const [showModal, setShowModal] = useState(false);
+  const { mutate: updateGardenJournal } = useUpdateSingleGardenJournal();
   const [entry, setEntry] = useState({
-    title: "",
-    content: "",
-    isPublic: false,
     image: null as File | null,
     preview: "",
   });
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setEntry((prev) => ({ ...prev, [name]: value }));
-  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -52,42 +58,57 @@ const CreateGardenJournal = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setLoading(true);
-    const image = await uploadToCloudinary(entry.image as File, "image");
-    const gardenJournalData = {
-      title: entry.title,
-      image,
-      content: entry.content,
-      user: user?._id,
-      isPublic: entry?.isPublic,
+    const gardenJournalData: Record<string, unknown> = {
+      id,
+      data: {
+        ...data,
+        user: user?._id as string,
+      },
     };
+    if (entry.image) {
+      const image = await uploadToCloudinary(entry.image as File, "image");
+      gardenJournalData.image = image;
+    }
 
-    createGardenJournal(gardenJournalData, {
-      onSuccess() {
+    updateGardenJournal(gardenJournalData, {
+      onSuccess(data) {
+        console.log(data);
         setLoading(false);
         queryClient.invalidateQueries({ queryKey: ["get_my_journals"] });
-        setShowModal(false);
+        setShowUpdateModal(false);
       },
       onError() {
-        setShowModal(false);
+        setShowUpdateModal(false);
       },
     });
   };
+
+  useEffect(() => {
+    if (data?.data) {
+      reset({
+        isPublic: data?.data?.isPublic,
+        content: data?.data?.content,
+        title: data?.data?.title,
+      });
+    }
+  }, [data]);
+
   return (
     <>
-      <Button variant={"bordered"} onPress={() => setShowModal(true)}>
-        Create Garden Journal <PlusIcon size={18} />
+      <Button onPress={() => setShowUpdateModal(true)}>
+        <EditIcon size={18} className="text-success" />
       </Button>
+
       <Modal
         size="4xl"
-        isOpen={showModal}
-        onOpenChange={() => setShowModal(false)}
+        isOpen={showUpdateModal}
+        onOpenChange={() => setShowUpdateModal(false)}
         placement="top-center"
         scrollBehavior="inside"
       >
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
             {(onClose) => (
               <>
@@ -99,25 +120,20 @@ const CreateGardenJournal = () => {
                   <div className="container-box">
                     <Card className="p-5">
                       <Input
-                        required
+                        {...register("title")}
                         label="Title"
-                        name="title"
                         placeholder="Enter your journal title"
                         fullWidth
-                        onChange={handleInputChange}
                       />
                       <Spacer y={1} />
                       <Textarea
-                        required
                         label="Entry"
-                        name="content"
+                        {...register("content")}
                         placeholder="Write about your gardening activities..."
                         fullWidth
-                        onChange={handleInputChange}
                       />
                       <Spacer y={4} />
                       <Input
-                        required
                         type="file"
                         label="Attach Image"
                         onChange={handleImageChange}
@@ -125,16 +141,16 @@ const CreateGardenJournal = () => {
                         fullWidth
                       />
                       <Spacer y={1} />
-                      {entry.preview && (
+                      {entry.preview ? (
                         <Image src={entry.preview} alt="Journal Entry Image" />
+                      ) : (
+                        <Image
+                          src={data?.data?.image}
+                          alt="Journal Entry Image"
+                        />
                       )}
-                      <Checkbox
-                        name="isPublic"
-                        onChange={(e) =>
-                          setEntry({ ...entry, isPublic: e.target.checked })
-                        }
-                        color="success"
-                      >
+                      <Spacer y={5} />
+                      <Checkbox {...register("isPublic")} color="success">
                         Public
                       </Checkbox>
                     </Card>
@@ -145,12 +161,12 @@ const CreateGardenJournal = () => {
                   <Button
                     color="danger"
                     variant="flat"
-                    onPress={() => setShowModal(false)}
+                    onPress={() => setShowUpdateModal(false)}
                   >
                     Close
                   </Button>
                   <Button isLoading={loading} type="submit" color="primary">
-                    Save Entry
+                    Edit Entry
                   </Button>
                 </ModalFooter>
               </>
@@ -162,4 +178,4 @@ const CreateGardenJournal = () => {
   );
 };
 
-export default CreateGardenJournal;
+export default UpdateGardenJournal;

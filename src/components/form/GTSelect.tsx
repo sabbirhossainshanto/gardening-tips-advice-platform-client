@@ -1,3 +1,5 @@
+"use client";
+
 import { IInput } from "@/src/types";
 import { Select, SelectItem } from "@nextui-org/select";
 import React from "react";

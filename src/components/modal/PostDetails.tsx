@@ -41,7 +41,7 @@ const PostDetails = ({ id }: { id: string }) => {
 
   const queryClient = useQueryClient();
   const { user } = useUser();
-  const { data } = useGetMe();
+  const { data } = useGetMe(user?.email as string);
   const { mutate: handleAddVote } = useAddVote();
   const { mutate: deletePost } = useDeletePost();
   const { mutate: addToBookmark } = useAddBookmark();

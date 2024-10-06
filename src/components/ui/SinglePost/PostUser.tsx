@@ -1,5 +1,6 @@
 "use client";
 
+import { useUser } from "@/src/context/user.provider";
 import { useFollowUnfollow } from "@/src/hooks/follow";
 import { useGetMe } from "@/src/hooks/profile";
 import { IUser } from "@/src/types";
@@ -11,7 +12,8 @@ import React from "react";
 
 const PostUser = ({ postUser }: { postUser: IUser }) => {
   const router = useRouter();
-  const { data } = useGetMe();
+  const { user } = useUser();
+  const { data } = useGetMe(user?.email as string);
   const { mutate } = useFollowUnfollow();
   const handleFollowUnFollow = (id: string) => {
     mutate({ followingId: id });

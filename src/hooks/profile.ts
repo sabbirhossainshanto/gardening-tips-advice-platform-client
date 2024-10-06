@@ -1,3 +1,5 @@
+"use client";
+
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { FieldValues } from "react-hook-form";
 import { updateProfile, verifyProfile } from "../services/Profile";
@@ -24,8 +26,9 @@ export const useUpdateProfile = () => {
   });
 };
 
-export const useGetMe = () => {
+export const useGetMe = (email: string) => {
   return useQuery<any, Error, IProfile>({
+    enabled: email ? true : false,
     queryKey: ["user"],
     queryFn: async () => await getMe(),
   });

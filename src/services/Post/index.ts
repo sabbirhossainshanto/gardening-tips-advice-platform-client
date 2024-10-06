@@ -81,6 +81,7 @@ export const getSinglePost = async (id: string) => {
 
 export const getAllPost = async (query: any) => {
   try {
+    console.log(query);
     const params = new URLSearchParams();
     if (query?.searchTerm) {
       params.append("searchTerm", query.searchTerm);
@@ -91,6 +92,12 @@ export const getAllPost = async (query: any) => {
     if (query?.filter) {
       params.append("filter", query.filter);
     }
+    // if (query?.limit) {
+    //   params.append("limit", query.limit);
+    // }
+    // if (query?.page) {
+    //   params.append("page", query.page);
+    // }
 
     const { data }: any = await nexiosInstance.get(`/posts`, {
       params,
@@ -113,7 +120,7 @@ export const getUpvotersForMyPosts = async () => {
 };
 export const getMyMyPosts = async () => {
   try {
-    const { data }: any = await nexiosInstance.get(`/posts/get-my-post`);
+    const { data }: any = await nexiosInstance.get(`/profile/get-my-post`);
 
     return data;
   } catch (error: any) {

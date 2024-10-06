@@ -5,9 +5,11 @@ import Tabs from "./Tabs";
 import { useGetMe } from "@/src/hooks/profile";
 import { useGetAllUsers } from "@/src/hooks/user";
 import { IUser } from "@/src/types";
+import { useUser } from "@/src/context/user.provider";
 
 const AllUsers = () => {
-  const { data: myProfile } = useGetMe();
+  const { user } = useUser();
+  const { data: myProfile } = useGetMe(user?.email as string);
   const { data } = useGetAllUsers();
 
   return (

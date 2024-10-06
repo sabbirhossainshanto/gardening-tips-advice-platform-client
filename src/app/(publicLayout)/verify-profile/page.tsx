@@ -11,21 +11,29 @@ import {
   Chip,
 } from "@nextui-org/react";
 import { CheckIcon } from "lucide-react";
+import { useState } from "react";
 
 const VerifyProfile = () => {
   const { user } = useUser();
+  const [loading, setLoading] = useState(0);
   const { mutate: handleVerifyProfile } = useVerifyProfile();
 
   const handlePayment = (amount: number) => {
+    setLoading(amount);
     const payload = {
       amount,
       user: user?._id,
     };
     handleVerifyProfile(payload, {
       onSuccess(data) {
+        console.log(data);
+        setLoading(0);
         if (data?.success) {
           window.location.href = data?.data?.payment_url;
         }
+      },
+      onError() {
+        setLoading(0);
       },
     });
   };
@@ -66,10 +74,15 @@ const VerifyProfile = () => {
             </div>
           </CardBody>
           <CardFooter className=" bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
-            <Button onClick={() => handlePayment(100)}>Get Access</Button>
+            <Button
+              isLoading={loading === 100}
+              onClick={() => handlePayment(100)}
+            >
+              Get Access
+            </Button>
           </CardFooter>
         </Card>
-        <Card className="pt-4 w-full">
+        {/* <Card className="pt-4 w-full">
           <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
             <p className="text-success uppercase font-bold">Premium</p>
             <p className="text-default-500">6 month access!</p>
@@ -103,9 +116,14 @@ const VerifyProfile = () => {
             </div>
           </CardBody>
           <CardFooter className=" bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
-            <Button onClick={() => handlePayment(300)}>Get Access</Button>
+            <Button
+              isLoading={loading === 300}
+              onClick={() => handlePayment(300)}
+            >
+              Get Access
+            </Button>
           </CardFooter>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );

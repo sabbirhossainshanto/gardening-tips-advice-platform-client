@@ -1,3 +1,5 @@
+"use client";
+
 import { IComment } from "@/src/types/comment";
 import { Image } from "@nextui-org/image";
 import React, { useState } from "react";

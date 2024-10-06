@@ -64,17 +64,7 @@ const Register = () => {
         onOpenChange={() => setShowRegister(false)}
         placement="top-center"
       >
-        <GTForm
-          //   //! Only for development
-          defaultValues={{
-            name: "Sabbir Hossain",
-            email: "sabbir@gmail.com",
-            password: "123456",
-            confirmPassword: "123456",
-            mobileNumber: "1234567890",
-          }}
-          onSubmit={onSubmit}
-        >
+        <GTForm onSubmit={onSubmit}>
           <ModalContent>
             <>
               <ModalHeader className="flex flex-col gap-1">

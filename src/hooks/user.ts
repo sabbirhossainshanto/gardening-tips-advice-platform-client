@@ -1,3 +1,5 @@
+"use client";
+
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { IResponse, IUpdateUserData, IUser, IUserStats } from "../types";
 import { getAllUsers, getMonthlyStats, updateUser } from "../services/User";

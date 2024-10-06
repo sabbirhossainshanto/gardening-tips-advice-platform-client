@@ -8,15 +8,46 @@ import { useUser } from "@/src/context/user.provider";
 import { useGetAllPost } from "@/src/hooks/post";
 import useDebounce from "@/src/hooks/useDebounce";
 import { IPost } from "@/src/types";
+import { Spinner } from "@nextui-org/react";
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
 export default function Home() {
-  const { query, user } = useUser();
-  const debouncedSearchTerm = useDebounce(query.searchTerm, 500);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const { query, setQuery, user } = useUser();
+  const [posts, setPosts] = useState<IPost[]>([]);
+  const [ref, inView] = useInView();
+
+  const debouncedSearchTerm = useDebounce(query.searchTerm, 200);
   const debouncedQuery = {
     ...query,
     searchTerm: debouncedSearchTerm,
   };
-  const { data } = useGetAllPost(debouncedQuery);
+
+  const { data, isFetching, isLoading, isPending } =
+    useGetAllPost(debouncedQuery);
+
+  // useEffect(() => {
+  //   if (inView && !isFetching && !isLoading && !isPending) {
+  //     setQuery({
+  //       ...query,
+  //       page: query.page + 1,
+  //     });
+  //   }
+  // }, [inView]);
+
+  // useEffect(() => {
+  //   if (data?.data && data?.data?.length > 0) {
+  //     if (!query?.searchTerm) {
+  //       setPosts((prev) => [...prev, ...data?.data!]);
+  //     } else {
+  //       setPosts(data?.data);
+  //     }
+  //   }
+  // }, [data]);
 
   return (
     <section className="flex flex-col items-center justify-center gap-4">
@@ -29,6 +60,7 @@ export default function Home() {
           <PostCard key={post?._id} post={post} />
         ))}
       </div>
+      {/* <Spinner ref={ref} size="lg" /> */}
       <div className="my-20">
         <div className="section-title my-8">
           <h2 className="mb-2 text-center text-2xl">Recent gardening images</h2>

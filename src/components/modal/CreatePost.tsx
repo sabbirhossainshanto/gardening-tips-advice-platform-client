@@ -21,6 +21,7 @@ import { PlusIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Editor from "../ui/Editor/Editor";
 import { uploadToCloudinary } from "@/src/utils/uploadToCloudinary";
+import { useGetMe } from "@/src/hooks/profile";
 
 const CreatePost = () => {
   const pathname = usePathname();
@@ -32,8 +33,9 @@ const CreatePost = () => {
   const [imagePreview, setImagePreview] = useState("");
   const { user, query } = useUser();
   const [content, setContent] = useState("");
+  const { data: me } = useGetMe(user?.email as string);
   const { mutate: createPost } = useCreatePost();
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -58,7 +60,10 @@ const CreatePost = () => {
 
     createPost(postData, {
       onSuccess() {
+        reset();
+        setContent("");
         setLoading(false);
+        setImagePreview("");
         queryClient.invalidateQueries({ queryKey: [`GET_ALL_POST`, query] });
         setShowModal(false);
       },
@@ -99,7 +104,11 @@ const CreatePost = () => {
                 </ModalHeader>
 
                 <ModalBody>
-                  <Editor content={content} setContent={setContent} />
+                  <Editor
+                    setUploadingImage={setUploadingImage}
+                    content={content}
+                    setContent={setContent}
+                  />
                   <div className="mt-5 space-y-3">
                     <Input
                       {...register("title", { required: true })}
@@ -134,11 +143,13 @@ const CreatePost = () => {
                       type="textarea"
                     />
 
-                    <div className="flex items-center justify-between">
-                      <Checkbox {...register("isPremium")} color="success">
-                        Premium
-                      </Checkbox>
-                    </div>
+                    {me?.data?.isVerified && me?.data?.premiumStatus && (
+                      <div className="flex items-center justify-between">
+                        <Checkbox {...register("isPremium")} color="success">
+                          Premium
+                        </Checkbox>
+                      </div>
+                    )}
                   </div>
                 </ModalBody>
 

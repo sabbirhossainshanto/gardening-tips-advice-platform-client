@@ -1,3 +1,5 @@
+"use client";
+
 import { IInput } from "@/src/types";
 import { DatePicker } from "@nextui-org/date-picker";
 import { Controller } from "react-hook-form";

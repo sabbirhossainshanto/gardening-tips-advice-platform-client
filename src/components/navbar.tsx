@@ -33,15 +33,18 @@ import { useChangePasswordModal } from "../store/showChangePassword";
 import { protectedRoute } from "../constant";
 import { useGetUpvoters } from "../hooks/post";
 import { useGetMe } from "../hooks/profile";
+import { useShowForgotPasswordModal } from "../store/showForgotPassword";
+import ForgotPassword from "./modal/ForgotPassword";
 
 export const Navbar = () => {
   const [changePassword, setChangePassword] = useChangePasswordModal();
   const [showLogin, setShowLogin] = useShowLoginModal();
   const [showRegister] = useShowRegisterModal();
+  const [showForgotPassword] = useShowForgotPasswordModal();
   const pathname = usePathname();
   const router = useRouter();
-  const { data: myData } = useGetMe();
-  const { user, setIsLoading: setUserLoading, setQuery } = useUser();
+  const { user, setIsLoading: setUserLoading, setQuery, query } = useUser();
+  const { data: myData } = useGetMe(user?.email as string);
   const { data: upvoters } = useGetUpvoters(user?.email as string);
 
   const handleLogout = () => {
@@ -55,7 +58,7 @@ export const Navbar = () => {
   const searchInput = (
     <Input
       onChange={(e) =>
-        setQuery({ sort: "upvotes", searchTerm: e.target.value })
+        setQuery({ ...query, sort: "upvotes", searchTerm: e.target.value })
       }
       aria-label="Search"
       classNames={{
@@ -76,6 +79,7 @@ export const Navbar = () => {
       {changePassword && <ChangePassword />}
       {showRegister && <Register />}
       {showLogin && <Login />}
+      {showForgotPassword && <ForgotPassword />}
       <div className="container-box">
         <NextUINavbar maxWidth="full" position="sticky">
           <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
@@ -88,7 +92,7 @@ export const Navbar = () => {
                 <p className="font-bold text-inherit">Gardening</p>
               </NextLink>
             </NavbarBrand>
-            <ul className="hidden lg:flex gap-4 justify-start ml-2">
+            <ul className="hidden lg:flex gap-6 justify-start ml-2">
               {siteConfig.navItems.map((item) => (
                 <NavbarItem key={item.href}>
                   <NextLink
@@ -186,6 +190,32 @@ export const Navbar = () => {
                       Post Management
                     </Link>
                   </NavbarMenuItem>
+                  <NavbarMenuItem key={`payment-history`}>
+                    <Link
+                      color={
+                        pathname === "/dashboard/payment-history"
+                          ? "primary"
+                          : "foreground"
+                      }
+                      href="/dashboard/payment-history"
+                      size="lg"
+                    >
+                      Payment History
+                    </Link>
+                  </NavbarMenuItem>
+                  <NavbarMenuItem key={`profile-update`}>
+                    <Link
+                      color={
+                        pathname === "/dashboard/profile-update"
+                          ? "primary"
+                          : "foreground"
+                      }
+                      href="/dashboard/profile-update"
+                      size="lg"
+                    >
+                      Profile Update
+                    </Link>
+                  </NavbarMenuItem>
                 </>
               ) : (
                 <>
@@ -234,6 +264,26 @@ export const Navbar = () => {
                   className="cursor-pointer"
                 >
                   Change Password
+                </Link>
+              </NavbarMenuItem>
+              <NavbarMenuItem key={`about`}>
+                <Link
+                  href="/about-us"
+                  color={"foreground"}
+                  size="lg"
+                  className="cursor-pointer"
+                >
+                  About
+                </Link>
+              </NavbarMenuItem>
+              <NavbarMenuItem key={`contact`}>
+                <Link
+                  href="/contact-us"
+                  color={"foreground"}
+                  size="lg"
+                  className="cursor-pointer"
+                >
+                  Contact Us
                 </Link>
               </NavbarMenuItem>
               {user?.email ? (

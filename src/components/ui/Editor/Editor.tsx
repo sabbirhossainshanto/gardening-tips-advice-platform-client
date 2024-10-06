@@ -20,8 +20,9 @@ import BulletList from "@tiptap/extension-bullet-list";
 interface IProps {
   content: string;
   setContent: Dispatch<SetStateAction<string>>;
+  setUploadingImage: Dispatch<SetStateAction<boolean>>;
 }
-const Editor = ({ content, setContent }: IProps) => {
+const Editor = ({ content, setContent, setUploadingImage }: IProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const editor = useEditor({
     extensions: [
@@ -68,7 +69,9 @@ const Editor = ({ content, setContent }: IProps) => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setUploadingImage(true);
       const imageUrl = await uploadToCloudinary(file, "image");
+      setUploadingImage(false);
       if (imageUrl && editor) {
         editor.chain().focus().setImage({ src: imageUrl }).run();
       }

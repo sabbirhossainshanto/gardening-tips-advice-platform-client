@@ -14,8 +14,9 @@ import { FieldValues, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
 
 const ProfileUpdate = () => {
-  const { setIsLoading: setUserLoading } = useUser();
-  const { data } = useGetMe();
+  const { setIsLoading: setUserLoading, user } = useUser();
+
+  const { data } = useGetMe(user?.email as string);
   const { mutate: handleUpdateProfile } = useUpdateProfile();
   const [imageFiles, setImageFiles] = useState<File | string>("");
   const [imagePreview, setImagePreview] = useState("");

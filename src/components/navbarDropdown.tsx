@@ -20,11 +20,11 @@ import { CheckIcon } from "lucide-react";
 import { Button } from "@nextui-org/button";
 
 export default function NavbarDropdown() {
-  const { data: myData } = useGetMe();
+  const { setIsLoading: userLoading, user } = useUser();
+  const { data: myData } = useGetMe(user?.email as string);
   const [_changePassword, setChangePassword] = useChangePasswordModal();
   const router = useRouter();
   const pathname = usePathname();
-  const { setIsLoading: userLoading, user } = useUser();
 
   const handleLogout = () => {
     logOut();

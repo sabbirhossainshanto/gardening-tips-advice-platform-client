@@ -18,7 +18,7 @@ import {
   FillUpVote,
   UpVote,
 } from "../icons";
-import { useAddBookmark, useAddVote } from "@/src/hooks/post";
+import { useAddBookmark, useAddVote, useDeletePost } from "@/src/hooks/post";
 import { useUser } from "@/src/context/user.provider";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -26,16 +26,22 @@ import { useGetMe } from "@/src/hooks/profile";
 import { useRouter } from "next/navigation";
 import PostActions from "../modal/PostActions";
 import UpdatePost from "../modal/UpdatePost";
+import { Button } from "@nextui-org/button";
+import { DeleteIcon, EditIcon } from "lucide-react";
+import { useShowUpdatePostModal } from "@/src/store/updatePostModal";
+import { useState } from "react";
 
 const PostCard = ({ post }: { post: IPost }) => {
   const { toPDF, targetRef } = usePDF({ filename: "post.pdf" });
   const router = useRouter();
   const queryClient = useQueryClient();
   const { user, query } = useUser();
-  const { data } = useGetMe();
+  const { data } = useGetMe(user?.email as string);
   const { mutate: handleAddVote } = useAddVote();
-
+  const { mutate: deletePost } = useDeletePost();
+  const [showModal, setShowModal] = useShowUpdatePostModal();
   const { mutate: addToBookmark } = useAddBookmark();
+  const [postId, setPostId] = useState("");
 
   const favoritesPost: string[] | undefined =
     data?.data && data?.data?.favorites?.map((post: IPost) => post._id);
@@ -93,18 +99,29 @@ const PostCard = ({ post }: { post: IPost }) => {
     router.push(`/${id}`);
   };
 
+  const handleDeletePost = (id: string) => {
+    deletePost(id, {
+      onSuccess() {
+        queryClient.invalidateQueries({ queryKey: [`GET_ALL_POST`, query] });
+      },
+    });
+  };
+
   const contentHTML = { __html: post?.content };
 
   return (
     <>
-      <UpdatePost post={post} />
+      {showModal && postId && (
+        <UpdatePost postId={postId} setPostId={setPostId} />
+      )}
       <NextUiCard
         ref={targetRef}
         isFooterBlurred
         className="h-[400px] w-full p-3 border border-gray-700 "
       >
         <CardHeader className="flex-col items-start">
-          <h4 className="mt-2  p-1 text-2xl font-medium ">{post.title}</h4>
+          <h4 className="mt-2  p-1 text-xl font-medium ">{post.title}</h4>
+          <p>{post?.category}</p>
           <p className="absolute top-0 left-1  px-2 text-tiny uppercase text-success">
             {post?.isPremium && "Premium"}
           </p>
@@ -113,10 +130,10 @@ const PostCard = ({ post }: { post: IPost }) => {
           </p>
         </CardHeader>
         <CardBody>
-          <div
+          {/* <div
             className="post-card mb-5"
             dangerouslySetInnerHTML={contentHTML}
-          />
+          /> */}
           <Image
             removeWrapper
             alt="Card example background"
@@ -195,6 +212,23 @@ const PostCard = ({ post }: { post: IPost }) => {
                 {/**/}
               </button>
             </div>
+            {user?._id === post?.user?._id || user?.role === "ADMIN" ? (
+              <DeleteIcon
+                size={18}
+                onClick={() => handleDeletePost(post?._id)}
+                className="text-danger cursor-pointer"
+              />
+            ) : null}
+            {user?._id === post?.user?._id ? (
+              <EditIcon
+                size={18}
+                onClick={() => {
+                  setPostId(post?._id);
+                  setShowModal(true);
+                }}
+                className="text-success cursor-pointer"
+              />
+            ) : null}
 
             <PostActions post={post} toPDF={toPDF} />
           </div>

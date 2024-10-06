@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardHeader, CardFooter, Image, Button } from "@nextui-org/react";
 
 export default function GardeningImageGallery() {

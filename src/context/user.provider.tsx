@@ -1,3 +1,5 @@
+"use client";
+
 import {
   createContext,
   Dispatch,
@@ -20,11 +22,15 @@ interface IUserContext {
   query: {
     searchTerm: string;
     sort: string;
+    // limit: number;
+    // page: number;
   };
   setQuery: Dispatch<
     SetStateAction<{
       searchTerm: string;
       sort: string;
+      // limit: number;
+      // page: number;
     }>
   >;
 }
@@ -35,6 +41,8 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   const [query, setQuery] = useState({
     searchTerm: "",
     sort: "",
+    // limit: 0,
+    // page: 0,
   });
 
   const handleUser = async () => {

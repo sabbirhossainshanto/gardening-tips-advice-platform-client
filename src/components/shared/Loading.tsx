@@ -1,3 +1,5 @@
+"use client";
+
 import { Spinner } from "@nextui-org/spinner";
 
 const Loading = () => {

@@ -22,12 +22,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useShowRegisterModal } from "@/src/store/showRegister";
 import { useShowLoginModal } from "@/src/store/showLogin";
 import { useQueryClient } from "@tanstack/react-query";
+import { useShowForgotPasswordModal } from "@/src/store/showForgotPassword";
 
 const Login = () => {
   const queryClient = useQueryClient();
   const [_showRegister, setShowRegister] = useShowRegisterModal();
+  const [_showForgotPassword, setShowForgotPassword] =
+    useShowForgotPasswordModal();
   const [showLogin, setShowLogin] = useShowLoginModal();
-
   const { setIsLoading: userLoading, query } = useUser();
 
   const { mutate: handleLogin, isPending, isSuccess } = useUserLogin();
@@ -51,6 +53,11 @@ const Login = () => {
     setShowRegister(true);
   };
 
+  const handleShowForgotPassword = () => {
+    setShowLogin(false);
+    setShowForgotPassword(true);
+  };
+
   return (
     <>
       <Modal
@@ -59,11 +66,6 @@ const Login = () => {
         placement="top-center"
       >
         <GTForm
-          //! Only for development
-          defaultValues={{
-            email: "sabbir@gmail.com",
-            password: "123456",
-          }}
           resolver={zodResolver(loginValidationSchema)}
           onSubmit={onSubmit}
         >
@@ -92,14 +94,22 @@ const Login = () => {
                     }
                   />
 
-                  <div className="flex py-2 px-1 justify-end">
+                  <div className="flex py-2 px-1 justify-between">
                     <span className="text-sm">
+                      <Link
+                        onClick={handleShowForgotPassword}
+                        color="danger"
+                        className="cursor-pointer text-xs"
+                      >
+                        Forgot Password?
+                      </Link>
+                    </span>
+                    <span className="text-xs">
                       <span>{"Don't"} have any account? </span>
                       <Link
                         onClick={handleShowRegister}
-                        size="md"
                         color="primary"
-                        className="cursor-pointer"
+                        className="cursor-pointer text-[12.5px]"
                       >
                         Register
                       </Link>

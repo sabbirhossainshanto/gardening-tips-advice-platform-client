@@ -1,6 +1,7 @@
 "use server";
 
 import nexiosInstance from "@/src/lib/NexiosInstance";
+import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
@@ -88,6 +89,36 @@ export const changePassword = async (payload: FieldValues) => {
       "/auth/change-password",
       payload
     );
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const forgotPassword = async (payload: { email: string }) => {
+  try {
+    const { data }: any = await nexiosInstance.post(
+      "/auth/forget-password",
+      payload
+    );
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const resetPassword = async (payload: FieldValues) => {
+  try {
+    const { data } = await axios.post(
+      `http://localhost:3000/api/v1/auth/reset-password`,
+      payload.data,
+      {
+        headers: {
+          Authorization: payload.token,
+        },
+      }
+    );
+
     return data;
   } catch (error: any) {
     throw new Error(error);

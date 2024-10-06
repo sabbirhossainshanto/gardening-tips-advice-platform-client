@@ -10,105 +10,34 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
-import { useCallback, useEffect, useRef, useState } from "react";
-import axios from "axios";
-// import ReactQuill from "react-quill";
+import { Dispatch, SetStateAction, use, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-// import "react-quill/dist/quill.snow.css";
-
 import { Input } from "@nextui-org/input";
 import { Button, Checkbox } from "@nextui-org/react";
-import {
-  useCreatePost,
-  useGetSInglePost,
-  useUpdatePost,
-} from "@/src/hooks/post";
+import { useGetSInglePost, useUpdatePost } from "@/src/hooks/post";
 import { useUser } from "@/src/context/user.provider";
 import { useQueryClient } from "@tanstack/react-query";
-import { usePathname } from "next/navigation";
 import { useShowUpdatePostModal } from "@/src/store/updatePostModal";
-import { IPost } from "@/src/types";
-
-const UpdatePost = ({ post }: { post: IPost }) => {
+import Editor from "../ui/Editor/Editor";
+import { uploadToCloudinary } from "@/src/utils/uploadToCloudinary";
+import { useGetMe } from "@/src/hooks/profile";
+interface IProps {
+  postId: string;
+  setPostId: Dispatch<SetStateAction<string>>;
+}
+const UpdatePost = ({ postId, setPostId }: IProps) => {
   const [imagePreview, setImagePreview] = useState("");
   const { mutate: updatePost } = useUpdatePost();
-  const { data: singlePost } = useGetSInglePost(post?._id);
-  const pathname = usePathname();
+  const { data: singlePost } = useGetSInglePost(postId);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
   const [showModal, setShowModal] = useShowUpdatePostModal();
   const [image, setImage] = useState<File>();
-  const { user, query } = useUser();
-  const [content, setContent] = useState("<p>dfddfdfdfdf</p>");
-  const { mutate: createPost } = useCreatePost();
+  const { query, user } = useUser();
+  const { data: me } = useGetMe(user?.email as string);
+  const [content, setContent] = useState(``);
   const { register, handleSubmit, reset } = useForm();
-  // const quillRef = useRef<ReactQuill>(null);
-
-  const handleChange = (content: string) => {
-    setContent(content);
-  };
-
-  const uploadToCloudinary = async (file: File, type: string) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append(
-      "upload_preset",
-      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!
-    );
-
-    try {
-      // https://api.cloudinary.com/v1_1/daar91zv4/upload
-      const response = await axios.post(
-        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/${type}/upload`,
-        formData
-      );
-      return response.data.secure_url;
-    } catch (error) {
-      console.error("Cloudinary upload error:", error);
-      return null;
-    }
-  };
-
-  // const handleImageUpload = useCallback(() => {
-  //   const input = document.createElement("input");
-  //   input.setAttribute("type", "file");
-  //   input.setAttribute("accept", "image/*");
-  //   input.click();
-
-  //   input.onchange = async () => {
-  //     const file = input.files ? input.files[0] : null;
-  //     if (file) {
-  //       setUploadingImage(true);
-  //       const imageUrl = await uploadToCloudinary(file, "image");
-  //       setUploadingImage(false);
-  //       if (imageUrl) {
-  //         const quill = quillRef.current!.getEditor();
-  //         const range = quill.getSelection(true);
-  //         quill.insertEmbed(range.index, "image", imageUrl, "user");
-  //       }
-  //     }
-  //   };
-  // }, []);
-
-  // const handleVideoUpload = () => {
-  //   const input = document.createElement("input");
-  //   input.setAttribute("type", "file");
-  //   input.setAttribute("accept", "video/*");
-  //   input.click();
-
-  //   input.onchange = async () => {
-  //     const file = input.files ? input.files[0] : null;
-  //     if (file) {
-  //       const videoUrl = await uploadToCloudinary(file, "video");
-  //       if (videoUrl) {
-  //         const quill = quillRef.current!.getEditor();
-  //         const range = quill.getSelection(true);
-  //         quill.insertEmbed(range.index, "video", videoUrl, "user");
-  //       }
-  //     }
-  //   };
-  // };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -145,61 +74,28 @@ const UpdatePost = ({ post }: { post: IPost }) => {
     });
   };
 
-  /* Quill config */
-  const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-    "color",
-    "code-block",
-  ];
-
-  const toolbar = [
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    ["bold", "italic", "underline", "code-block"],
-    ["link", "image"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    [{ indent: "-1" }, { indent: "+1" }],
-    [{ direction: "rtl" }],
-    [{ color: [] }, { background: [] }],
-    [{ font: [] }],
-    [{ align: [] }],
-    ["clean"],
-  ];
-
-  // const modules = {
-  //   toolbar: {
-  //     container: toolbar,
-  //     handlers: {
-  //       image: handleImageUpload,
-  //       // video: handleVideoUpload,
-  //     },
-  //   },
-  // };
-
   useEffect(() => {
     if (singlePost?.data) {
+      setContent(singlePost?.data?.content);
       reset({
         title: singlePost?.data?.title,
         category: singlePost?.data?.category,
         description: singlePost?.data?.description,
         isPremium: singlePost?.data?.isPremium,
       });
-      setContent(singlePost?.data?.content);
     }
   }, [singlePost]);
+
+  console.log(content);
 
   if (!singlePost?.data) {
     return null;
   }
+
+  const closeModal = () => {
+    setPostId("");
+    setShowModal(false);
+  };
 
   return (
     <>
@@ -207,7 +103,7 @@ const UpdatePost = ({ post }: { post: IPost }) => {
         size="5xl"
         scrollBehavior="inside"
         isOpen={showModal}
-        onOpenChange={() => setShowModal(false)}
+        onOpenChange={closeModal}
         placement="top-center"
       >
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -226,14 +122,11 @@ const UpdatePost = ({ post }: { post: IPost }) => {
                 </ModalHeader>
 
                 <ModalBody>
-                  {/* <ReactQuill
-                    theme="snow"
-                    value={content}
-                    ref={quillRef}
-                    onChange={handleChange}
-                    modules={modules}
-                    formats={formats}
-                  /> */}
+                  <Editor
+                    setUploadingImage={setUploadingImage}
+                    content={content}
+                    setContent={setContent}
+                  />
                   <div className="mt-5 space-y-3">
                     <Input
                       {...register("title", { required: true })}
@@ -278,20 +171,18 @@ const UpdatePost = ({ post }: { post: IPost }) => {
                       type="textarea"
                     />
 
-                    <div className="flex items-center justify-between">
-                      <Checkbox {...register("isPremium")} color="success">
-                        Premium
-                      </Checkbox>
-                    </div>
+                    {me?.data?.isVerified && me?.data?.premiumStatus && (
+                      <div className="flex items-center justify-between">
+                        <Checkbox {...register("isPremium")} color="success">
+                          Premium
+                        </Checkbox>
+                      </div>
+                    )}
                   </div>
                 </ModalBody>
 
                 <ModalFooter>
-                  <Button
-                    color="danger"
-                    variant="flat"
-                    onPress={() => setShowModal(false)}
-                  >
+                  <Button color="danger" variant="flat" onPress={closeModal}>
                     Close
                   </Button>
                   <Button isLoading={loading} type="submit" color="primary">

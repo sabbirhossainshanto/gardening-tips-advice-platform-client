@@ -11,6 +11,7 @@ import {
 import { Image } from "@nextui-org/image";
 import {
   Bookmark,
+  DeleteIcon,
   DownVote,
   FillBookmark,
   FillDownVote,
@@ -30,6 +31,8 @@ import Comment from "../Comment/Comment";
 import PostUser from "./PostUser";
 import PostActions from "../../modal/PostActions";
 import UpdatePost from "../../modal/UpdatePost";
+import { useShowUpdatePostModal } from "@/src/store/updatePostModal";
+import { EditIcon } from "lucide-react";
 
 const SinglePost = ({ post }: { post: IPost }) => {
   const { toPDF, targetRef } = usePDF({ filename: "post.pdf" });
@@ -41,10 +44,12 @@ const SinglePost = ({ post }: { post: IPost }) => {
     isSuccess: isCommentSuccess,
   } = useAddComment();
   const { user } = useUser();
-  const { data } = useGetMe();
+  const { data } = useGetMe(user?.email as string);
   const { mutate: handleAddVote } = useAddVote();
   const { mutate: addToBookmark } = useAddBookmark();
   const { data: commentData } = useGetAllComment();
+  const [showModal, setShowModal] = useShowUpdatePostModal();
+  const [postId, setPostId] = useState("");
 
   const favoritesPost: string[] | undefined = data?.data?.favorites?.map(
     (post: IPost) => post._id
@@ -124,8 +129,10 @@ const SinglePost = ({ post }: { post: IPost }) => {
   const contentHTML = { __html: post?.content };
   return (
     <>
-      <UpdatePost post={post} />
-      <div className="md:grid md:grid-cols-12 gap-4">
+      {showModal && postId && (
+        <UpdatePost postId={postId} setPostId={setPostId} />
+      )}
+      <div className="md:grid md:grid-cols-12 gap-4 mb-5">
         <div className="col-span-8">
           <NextUiCard
             ref={targetRef}
@@ -201,10 +208,18 @@ const SinglePost = ({ post }: { post: IPost }) => {
                     ) : (
                       <Bookmark />
                     )}
-
-                    {/**/}
                   </button>
                 </div>
+                {user?._id === post?.user?._id ? (
+                  <EditIcon
+                    size={18}
+                    onClick={() => {
+                      setPostId(post?._id);
+                      setShowModal(true);
+                    }}
+                    className="text-success cursor-pointer"
+                  />
+                ) : null}
                 <PostActions post={post} toPDF={toPDF} />
               </div>
             </CardFooter>

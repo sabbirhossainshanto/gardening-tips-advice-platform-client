@@ -1,8 +1,12 @@
+"use client";
+
 import { useMutation } from "@tanstack/react-query";
 import {
   changePassword,
+  forgotPassword,
   loginUser,
   registerUser,
+  resetPassword,
 } from "../services/AuthService";
 import { toast } from "sonner";
 import { FieldValues } from "react-hook-form";
@@ -43,5 +47,23 @@ export const useChangePassword = () => {
     onError: (error) => {
       toast.error(error.message);
     },
+  });
+};
+export const useForgotPassword = () => {
+  return useMutation<any, Error, any>({
+    mutationKey: ["forgot_password"],
+    mutationFn: async (payload) => await forgotPassword(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+};
+export const useResetPassword = () => {
+  return useMutation<any, Error, any>({
+    mutationKey: ["reset_password"],
+    mutationFn: async (payload) => await resetPassword(payload),
   });
 };

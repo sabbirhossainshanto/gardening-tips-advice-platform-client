@@ -1,3 +1,5 @@
+"use client";
+
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   addToBookmark,
@@ -10,7 +12,7 @@ import {
   updatePost,
   upvoteOrDownvote,
 } from "../services/Post";
-import { IPost, IUpdateVote, IUser } from "../types";
+import { IPost, IResponse, IUpdateVote, IUser } from "../types";
 import { toast } from "sonner";
 
 interface IPostProps {
@@ -98,7 +100,7 @@ export const useGetSInglePost = (id: string) => {
 };
 
 export const useGetAllPost = (query: any) => {
-  return useQuery<any, Error, any>({
+  return useQuery<any, Error, IResponse<IPost[] | undefined>>({
     queryKey: [`GET_ALL_POST`, query],
     queryFn: async () => await getAllPost(query),
   });
