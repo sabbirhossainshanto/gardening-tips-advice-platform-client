@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 // Default configuration for Nexios
 // https://gardening-advice-platform.vercel.app/api/v1
 const defaultConfig: NexiosOptions = {
+  // baseURL: "http://localhost:3000/api/v1",
   baseURL: "https://gardening-advice-platform.vercel.app/api/v1",
   headers: {
     "Content-Type": "application/json",
@@ -18,7 +19,7 @@ const nexiosInstance = new Nexios(defaultConfig);
 // Add request interceptor
 nexiosInstance.interceptors.request.use((config) => {
   const accessToken = cookies().get("accessToken")?.value;
-
+  console.log({ accessToken });
   if (accessToken) {
     config.headers = {
       ...config.headers,

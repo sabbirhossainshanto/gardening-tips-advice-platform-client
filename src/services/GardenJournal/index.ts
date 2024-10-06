@@ -1,7 +1,6 @@
 "use server";
 
 import nexiosInstance from "@/src/lib/NexiosInstance";
-import { IGardenJournal } from "@/src/types/garden-journal";
 
 export const createGardenJournal = async (payload: any) => {
   try {

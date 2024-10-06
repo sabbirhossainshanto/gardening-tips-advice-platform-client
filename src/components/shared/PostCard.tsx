@@ -95,8 +95,8 @@ const PostCard = ({ post }: { post: IPost }) => {
     (downvote) => downvote._id === user?._id
   );
 
-  const handleNavigateToDetailsPage = (id: string) => {
-    router.push(`/${id}`);
+  const handleNavigateToDetailsPage = (post: IPost) => {
+    router.push(`/posts/${post?._id}`);
   };
 
   const handleDeletePost = (id: string) => {
@@ -180,7 +180,7 @@ const PostCard = ({ post }: { post: IPost }) => {
               </button>
             </div>
             <div className="flex flex-row items-stretch select-none">
-              <button onClick={() => handleNavigateToDetailsPage(post?._id)}>
+              <button onClick={() => handleNavigateToDetailsPage(post)}>
                 <svg
                   width="1em"
                   height="1em"
@@ -197,7 +197,7 @@ const PostCard = ({ post }: { post: IPost }) => {
               </button>
             </div>
             <div className="flex flex-row items-stretch select-none">
-              <button onClick={() => handleNavigateToDetailsPage(post?._id)}>
+              <button onClick={() => handleNavigateToDetailsPage(post)}>
                 <EyeIcon />
               </button>
             </div>

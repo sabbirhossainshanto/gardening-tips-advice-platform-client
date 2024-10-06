@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
+import { Suspense } from "react";
 import {
   Modal,
   ModalContent,
@@ -9,13 +9,13 @@ import {
   ModalFooter,
   Button,
 } from "@nextui-org/react";
-
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import { useResetPassword } from "@/src/hooks/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import GTForm from "@/src/components/form/GTForm";
 import GTInput from "@/src/components/form/GTInput";
 import { toast } from "sonner";
+import Loading from "@/src/components/shared/Loading";
 
 const ResetPassword = () => {
   const params = useSearchParams();
@@ -46,12 +46,8 @@ const ResetPassword = () => {
   };
 
   return (
-    <>
-      <Modal
-        //   onOpenChange={closeModal}
-        isOpen={true}
-        placement="top-center"
-      >
+    <Suspense fallback={<Loading />}>
+      <Modal isOpen={true} placement="top-center">
         <GTForm onSubmit={onSubmit}>
           <ModalContent>
             {(onClose) => (
@@ -85,7 +81,7 @@ const ResetPassword = () => {
           </ModalContent>
         </GTForm>
       </Modal>
-    </>
+    </Suspense>
   );
 };
 

@@ -3,7 +3,7 @@ import nexiosInstance from "@/src/lib/NexiosInstance";
 import { IPost } from "@/src/types";
 import React from "react";
 
-const page = async ({ params }: { params: { userId: string } }) => {
+const SingleUserPosts = async ({ params }: { params: { userId: string } }) => {
   const { data }: any = await nexiosInstance.get(
     `/posts/user/${params.userId}`
   );
@@ -16,4 +16,4 @@ const page = async ({ params }: { params: { userId: string } }) => {
   );
 };
 
-export default page;
+export default SingleUserPosts;

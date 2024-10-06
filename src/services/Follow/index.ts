@@ -11,11 +11,7 @@ export const followUser = async (payload: { followingId: string }) => {
       payload
     );
     revalidateTag("user");
-    if (data?.success) {
-      return data;
-    } else {
-      throw new Error(data?.data?.message);
-    }
+    return data;
   } catch (error: any) {
     throw new Error(error);
   }

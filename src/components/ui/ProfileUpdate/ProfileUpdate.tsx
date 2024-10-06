@@ -11,64 +11,56 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { ChangeEvent } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
-import { toast } from "sonner";
 
 const ProfileUpdate = () => {
   const { setIsLoading: setUserLoading, user } = useUser();
-
   const { data } = useGetMe(user?.email as string);
   const { mutate: handleUpdateProfile } = useUpdateProfile();
   const [imageFiles, setImageFiles] = useState<File | string>("");
   const [imagePreview, setImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isMounted, setIsMounted] = useState(false); // Ensure client-side rendering
   const router = useRouter();
-
-  // Ensure the component is mounted in the browser
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   useEffect(() => {
     // Make sure this runs only when the component is mounted
-    if (isMounted) {
-      if (imageFiles) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImagePreview(reader.result as string);
-        };
-        reader.readAsDataURL(imageFiles as File);
-      }
+
+    if (imageFiles) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(imageFiles as File);
     }
-  }, [imageFiles, isMounted]);
+  }, [imageFiles]);
 
   const handleSubmit: SubmitHandler<FieldValues> = async (profileData) => {
-    try {
-      setLoading(true);
-      let payload = { ...profileData };
+    setLoading(true);
+    let payload = { ...profileData };
 
-      if (imageFiles) {
-        const formData = new FormData();
-        formData.append("file", imageFiles);
-        formData.append("upload_preset", "sabbirCloud");
-        formData.append("cloud_name", "daar91zv4");
+    if (imageFiles) {
+      const formData = new FormData();
+      formData.append("file", imageFiles);
+      formData.append("upload_preset", "sabbirCloud");
+      formData.append("cloud_name", "daar91zv4");
 
-        const { data }: any = await axios.post(
-          "https://api.cloudinary.com/v1_1/daar91zv4/upload",
-          formData
-        );
-        payload.profilePhoto = data.secure_url;
-      }
-
-      handleUpdateProfile(payload);
-      setLoading(false);
-      logOut();
-      setUserLoading(true);
-      router.push("/");
-    } catch (error: any) {
-      setLoading(false);
-      toast.error(error?.data?.errorMessages?.[0]?.message);
+      const { data }: any = await axios.post(
+        "https://api.cloudinary.com/v1_1/daar91zv4/upload",
+        formData
+      );
+      payload.profilePhoto = data.secure_url;
     }
+
+    handleUpdateProfile(payload, {
+      onSuccess() {
+        setLoading(false);
+        logOut();
+        setUserLoading(true);
+        router.push("/");
+      },
+      onError() {
+        setLoading(false);
+      },
+    });
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -117,25 +109,23 @@ const ProfileUpdate = () => {
                 />
               </div>
 
-              {isMounted && (
-                <div className="mb-2">
-                  <div className="min-w-fit">
-                    <label
-                      className="flex h-14 w-full cursor-pointer items-center justify-center rounded-xl border-2 border-default-200 text-default-500 shadow-sm transition-all duration-100 hover:border-default-400"
-                      htmlFor="image"
-                    >
-                      Upload image
-                    </label>
-                    <input
-                      multiple
-                      className="hidden"
-                      id="image"
-                      type="file"
-                      onChange={handleImageChange}
-                    />
-                  </div>
+              <div className="mb-2">
+                <div className="min-w-fit">
+                  <label
+                    className="flex h-14 w-full cursor-pointer items-center justify-center rounded-xl border-2 border-default-200 text-default-500 shadow-sm transition-all duration-100 hover:border-default-400"
+                    htmlFor="image"
+                  >
+                    Upload image
+                  </label>
+                  <input
+                    multiple
+                    className="hidden"
+                    id="image"
+                    type="file"
+                    onChange={handleImageChange}
+                  />
                 </div>
-              )}
+              </div>
 
               <div className="flex items-center justify-end w-full mt-5">
                 <Button isLoading={loading} type="submit">
@@ -147,7 +137,7 @@ const ProfileUpdate = () => {
 
           <div className="py-4 pl-5 flex-1">
             <div className="w-full py-2.5">
-              {isMounted && imagePreview ? (
+              {imagePreview ? (
                 <div className="relative rounded-xl h-[300px] border-2 border-dashed border-default-300 p-2">
                   <img
                     alt="item"

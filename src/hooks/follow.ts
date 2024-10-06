@@ -1,5 +1,3 @@
-"use client";
-
 import { useMutation } from "@tanstack/react-query";
 import { followUser } from "../services/Follow";
 import { toast } from "sonner";
@@ -12,6 +10,7 @@ export const useFollowUnfollow = () => {
       toast.success(data?.message);
     },
     onError: (error) => {
+      console.log(error);
       toast.error(error.message);
     },
   });

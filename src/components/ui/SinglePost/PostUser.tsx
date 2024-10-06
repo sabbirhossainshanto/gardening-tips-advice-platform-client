@@ -9,6 +9,7 @@ import { CardHeader, Card as NextUiCard } from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { toast } from "sonner";
 
 const PostUser = ({ postUser }: { postUser: IUser }) => {
   const router = useRouter();
@@ -16,7 +17,11 @@ const PostUser = ({ postUser }: { postUser: IUser }) => {
   const { data } = useGetMe(user?.email as string);
   const { mutate } = useFollowUnfollow();
   const handleFollowUnFollow = (id: string) => {
-    mutate({ followingId: id });
+    if (user?.email) {
+      mutate({ followingId: id });
+    } else {
+      toast.error("Please login to follow user!");
+    }
   };
 
   const isAlreadyFollowed = postUser?.followers?.find(
@@ -37,7 +42,7 @@ const PostUser = ({ postUser }: { postUser: IUser }) => {
           <h1>{postUser?.name}</h1>
         </div>
         <Button
-          onClick={() => router.push(`/all-post/${postUser?._id}`)}
+          onClick={() => router.push(`/all-posts/${postUser?._id}`)}
           className="rounded-full"
         >
           See Posts
