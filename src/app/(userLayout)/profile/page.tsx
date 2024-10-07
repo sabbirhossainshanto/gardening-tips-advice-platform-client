@@ -6,7 +6,6 @@ import { IPost } from "@/src/types";
 
 const Profile = () => {
   const { data } = useGetMyPost();
-  console.log(data);
   return (
     <div>
       {data?.data?.length > 0 ? (

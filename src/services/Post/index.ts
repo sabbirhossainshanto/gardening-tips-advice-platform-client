@@ -81,7 +81,6 @@ export const getSinglePost = async (id: string) => {
 
 export const getAllPost = async (query: any) => {
   try {
-    console.log(query);
     const params = new URLSearchParams();
     if (query?.searchTerm) {
       params.append("searchTerm", query.searchTerm);

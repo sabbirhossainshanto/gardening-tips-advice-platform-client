@@ -110,7 +110,7 @@ export const forgotPassword = async (payload: { email: string }) => {
 export const resetPassword = async (payload: FieldValues) => {
   try {
     const { data } = await axios.post(
-      `http://localhost:3000/api/v1/auth/reset-password`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/auth/reset-password`,
       payload.data,
       {
         headers: {

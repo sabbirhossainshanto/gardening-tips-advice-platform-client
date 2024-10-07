@@ -7,10 +7,10 @@ import { useUser } from "@/src/context/user.provider";
 import { useGetMe, useUpdateProfile } from "@/src/hooks/profile";
 import { logOut } from "@/src/services/AuthService";
 import { Button } from "@nextui-org/button";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { ChangeEvent } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
+import { uploadToCloudinary } from "@/src/utils/uploadToCloudinary";
 
 const ProfileUpdate = () => {
   const { setIsLoading: setUserLoading, user } = useUser();
@@ -38,16 +38,9 @@ const ProfileUpdate = () => {
     let payload = { ...profileData };
 
     if (imageFiles) {
-      const formData = new FormData();
-      formData.append("file", imageFiles);
-      formData.append("upload_preset", "sabbirCloud");
-      formData.append("cloud_name", "daar91zv4");
+      const imageUrl = await uploadToCloudinary(imageFiles as File, "image");
 
-      const { data }: any = await axios.post(
-        "https://api.cloudinary.com/v1_1/daar91zv4/upload",
-        formData
-      );
-      payload.profilePhoto = data.secure_url;
+      payload.profilePhoto = imageUrl;
     }
 
     handleUpdateProfile(payload, {

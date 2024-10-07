@@ -74,7 +74,6 @@ const UpdateGardenJournal = ({
 
     updateGardenJournal(gardenJournalData, {
       onSuccess(data) {
-        console.log(data);
         setLoading(false);
         queryClient.invalidateQueries({ queryKey: ["get_my_journals"] });
         setShowUpdateModal(false);

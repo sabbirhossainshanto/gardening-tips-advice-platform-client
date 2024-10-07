@@ -86,8 +86,6 @@ const UpdatePost = ({ postId, setPostId }: IProps) => {
     }
   }, [singlePost]);
 
-  console.log(content);
-
   if (!singlePost?.data) {
     return null;
   }

@@ -26,7 +26,6 @@ const VerifyProfile = () => {
     };
     handleVerifyProfile(payload, {
       onSuccess(data) {
-        console.log(data);
         setLoading(0);
         if (data?.success) {
           window.location.href = data?.data?.payment_url;
