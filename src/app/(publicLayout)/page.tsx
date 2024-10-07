@@ -1,4 +1,5 @@
 "use client";
+import CardSkeleton from "@/src/components/CardSkeleton";
 import GardeningImageGallery from "@/src/components/GardeningImageGallery";
 import GardeningQuotes from "@/src/components/GardeningQuotes";
 import CreatePost from "@/src/components/modal/CreatePost";
@@ -9,7 +10,7 @@ import { useGetAllPost } from "@/src/hooks/post";
 import useDebounce from "@/src/hooks/useDebounce";
 import { IPost } from "@/src/types";
 import { Spinner } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 export default function Home() {
@@ -55,11 +56,18 @@ export default function Home() {
         {user?.email && <CreatePost />}
         <SortByUpVotes />
       </div>
-      <div className="w-full grid  gap-10 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 p-5">
-        {data?.data?.map((post: IPost) => (
-          <PostCard key={post?._id} post={post} />
-        ))}
-      </div>
+      {isLoading ? (
+        <CardSkeleton />
+      ) : (
+        <Suspense fallback={<CardSkeleton />}>
+          <div className="w-full grid  gap-10 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 p-5">
+            {data?.data?.map((post: IPost) => (
+              <PostCard key={post?._id} post={post} />
+            ))}
+          </div>
+        </Suspense>
+      )}
+
       {/* <Spinner ref={ref} size="lg" /> */}
       <div className="my-20">
         <div className="section-title my-8">
