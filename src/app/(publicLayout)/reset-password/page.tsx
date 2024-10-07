@@ -14,7 +14,6 @@ import { useResetPassword } from "@/src/hooks/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import GTForm from "@/src/components/form/GTForm";
 import GTInput from "@/src/components/form/GTInput";
-import { toast } from "sonner";
 import Loading from "@/src/components/shared/Loading";
 
 const ResetPassword = () => {
@@ -34,8 +33,7 @@ const ResetPassword = () => {
     };
 
     resetPassword(resetPasswordData, {
-      onSuccess(data) {
-        toast.success(data?.message);
+      onSuccess() {
         router.push("/");
       },
     });
