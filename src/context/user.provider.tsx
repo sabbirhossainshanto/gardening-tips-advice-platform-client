@@ -22,15 +22,15 @@ interface IUserContext {
   query: {
     searchTerm: string;
     sort: string;
-    limit: number;
-    page: number;
+    // limit: number;
+    // page: number;
   };
   setQuery: Dispatch<
     SetStateAction<{
       searchTerm: string;
       sort: string;
-      limit: number;
-      page: number;
+      // limit: number;
+      // page: number;
     }>
   >;
   posts: IPost[];
@@ -47,8 +47,8 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   const [query, setQuery] = useState({
     searchTerm: "",
     sort: "",
-    limit: 6,
-    page: 1,
+    // limit: 6,
+    // page: 1,
   });
   const [posts, setPosts] = useState<IPost[]>([]);
   const [total, setTotal] = useState<number | null>(null);

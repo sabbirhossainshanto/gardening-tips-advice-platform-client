@@ -9,15 +9,22 @@ import { useUser } from "@/src/context/user.provider";
 
 const AllUsers = () => {
   const { user } = useUser();
-  const { data: myProfile } = useGetMe(user?.email as string);
-  const { data } = useGetAllUsers();
+  const { data: myProfile, refetch: refetchMe } = useGetMe(
+    user?.email as string
+  );
+  const { data, refetch: refetchUser } = useGetAllUsers();
 
   return (
     <NextUiCard
       isFooterBlurred
       className="h-[400px] w-full p-3 border border-gray-700 overflow-y-scroll"
     >
-      <Tabs users={data?.data as IUser[]} myProfile={myProfile?.data!} />
+      <Tabs
+        refetchMe={refetchMe}
+        refetchUser={refetchUser}
+        users={data?.data as IUser[]}
+        myProfile={myProfile?.data!}
+      />
     </NextUiCard>
   );
 };

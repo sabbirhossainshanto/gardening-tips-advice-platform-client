@@ -3,22 +3,23 @@
 import { IUser } from "@/src/types";
 import { Button, Image, Tabs as NextTabs, Tab } from "@nextui-org/react";
 import { useFollowUnfollow } from "@/src/hooks/follow";
-import { useQueryClient } from "@tanstack/react-query";
 
 interface ITabsProps {
   users: IUser[];
   myProfile: IUser;
+  refetchUser: any;
+  refetchMe: any;
 }
 
-const Tabs = ({ users, myProfile }: ITabsProps) => {
-  const queryClient = useQueryClient();
+const Tabs = ({ users, myProfile, refetchMe, refetchUser }: ITabsProps) => {
   const { mutate } = useFollowUnfollow();
   const handleFollowUnFollow = (id: string) => {
     mutate(
       { followingId: id },
       {
         onSuccess() {
-          queryClient.invalidateQueries({ queryKey: ["all-users"] });
+          refetchMe();
+          refetchUser();
         },
       }
     );

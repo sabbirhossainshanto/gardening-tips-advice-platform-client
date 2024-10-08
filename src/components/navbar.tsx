@@ -58,7 +58,13 @@ export const Navbar = () => {
   const searchInput = (
     <Input
       onChange={(e) =>
-        setQuery({ ...query, sort: "upvotes", searchTerm: e.target.value })
+        setQuery({
+          ...query,
+          sort: "upvotes",
+          searchTerm: e.target.value,
+          page: 0,
+          limit: 0,
+        })
       }
       aria-label="Search"
       classNames={{

@@ -91,12 +91,12 @@ export const getAllPost = async (query: any) => {
     if (query?.filter) {
       params.append("filter", query.filter);
     }
-    if (query?.limit) {
-      params.append("limit", query.limit);
-    }
-    if (query?.page) {
-      params.append("page", query.page);
-    }
+    // if (query?.limit) {
+    //   params.append("limit", query.limit);
+    // }
+    // if (query?.page) {
+    //   params.append("page", query.page);
+    // }
 
     const { data }: any = await nexiosInstance.get(`/posts`, {
       params,

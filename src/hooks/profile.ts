@@ -5,13 +5,7 @@ import { FieldValues } from "react-hook-form";
 import { updateProfile, verifyProfile } from "../services/Profile";
 import { toast } from "sonner";
 import { getMe } from "../services/AuthService";
-import { IUser } from "../types";
-
-interface IProfile {
-  success: boolean;
-  message: string;
-  data: IUser;
-}
+import { IResponse, IUser } from "../types";
 
 export const useUpdateProfile = () => {
   return useMutation<any, Error, FieldValues>({
@@ -27,9 +21,9 @@ export const useUpdateProfile = () => {
 };
 
 export const useGetMe = (email: string) => {
-  return useQuery<any, Error, IProfile>({
+  return useQuery<any, Error, IResponse<IUser>>({
     enabled: email ? true : false,
-    queryKey: ["user"],
+    queryKey: ["my-profile"],
     queryFn: async () => await getMe(),
   });
 };

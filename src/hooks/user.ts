@@ -5,14 +5,8 @@ import { IResponse, IUpdateUserData, IUser, IUserStats } from "../types";
 import { getAllUsers, getMonthlyStats, updateUser } from "../services/User";
 import { toast } from "sonner";
 
-interface IUsersResponseType {
-  success: boolean;
-  message: string;
-  data: IUser[];
-}
-
 export const useGetAllUsers = () => {
-  return useQuery<IUsersResponseType>({
+  return useQuery<IResponse<IUser[]>>({
     queryKey: ["all-users"],
     queryFn: async () => await getAllUsers(),
   });
