@@ -9,9 +9,8 @@ import { useUser } from "@/src/context/user.provider";
 import { useGetAllPost } from "@/src/hooks/post";
 import useDebounce from "@/src/hooks/useDebounce";
 import { IPost } from "@/src/types";
-import { Spinner } from "@nextui-org/react";
-import { Suspense, useEffect, useState } from "react";
-import { useInView } from "react-intersection-observer";
+import { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function Home() {
   useEffect(() => {
@@ -20,35 +19,29 @@ export default function Home() {
 
   const { query, setQuery, user } = useUser();
   const [posts, setPosts] = useState<IPost[]>([]);
-  const [ref, inView] = useInView();
-
+  const [loading, setLoading] = useState(true);
+  const [currentCount, setCurrentCount] = useState(0);
+  const [total, setTotal] = useState(null);
   const debouncedSearchTerm = useDebounce(query.searchTerm, 200);
   const debouncedQuery = {
     ...query,
     searchTerm: debouncedSearchTerm,
   };
 
-  const { data, isFetching, isLoading, isPending } =
-    useGetAllPost(debouncedQuery);
+  const { data, isFetched, refetch } = useGetAllPost(debouncedQuery);
 
-  // useEffect(() => {
-  //   if (inView && !isFetching && !isLoading && !isPending) {
-  //     setQuery({
-  //       ...query,
-  //       page: query.page + 1,
-  //     });
-  //   }
-  // }, [inView]);
-
-  // useEffect(() => {
-  //   if (data?.data && data?.data?.length > 0) {
-  //     if (!query?.searchTerm) {
-  //       setPosts((prev) => [...prev, ...data?.data!]);
-  //     } else {
-  //       setPosts(data?.data);
-  //     }
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    if (data?.data && data?.data?.length > 0) {
+      setLoading(false);
+      setPosts((prevPosts) => [...prevPosts, ...data.data!]);
+      setTotal(data?.meta?.total);
+      setCurrentCount((prevCount) => prevCount + data.data!.length);
+      setQuery({
+        ...query,
+        page: query.page + 1,
+      });
+    }
+  }, [data, isFetched]);
 
   return (
     <section className="flex flex-col items-center justify-center gap-4">
@@ -56,7 +49,32 @@ export default function Home() {
         {user?.email && <CreatePost />}
         <SortByUpVotes />
       </div>
-      {isLoading ? (
+
+      {loading ? (
+        <CardSkeleton />
+      ) : (
+        <InfiniteScroll
+          dataLength={posts?.length}
+          next={() => {
+            setQuery((prev) => ({ ...prev, page: prev.page + 1 }));
+            refetch();
+          }}
+          hasMore={currentCount !== total}
+          loader={<CardSkeleton />}
+          endMessage={
+            <p style={{ textAlign: "center" }}>
+              <b>No more post available!</b>
+            </p>
+          }
+        >
+          <div className="w-full grid  gap-10 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 p-5">
+            {posts?.map((post: IPost) => (
+              <PostCard key={post?._id} post={post} />
+            ))}
+          </div>
+        </InfiniteScroll>
+      )}
+      {/* {isLoading ? (
         <CardSkeleton />
       ) : (
         <Suspense fallback={<CardSkeleton />}>
@@ -66,7 +84,7 @@ export default function Home() {
             ))}
           </div>
         </Suspense>
-      )}
+      )} */}
 
       {/* <Spinner ref={ref} size="lg" /> */}
       <div className="my-20">

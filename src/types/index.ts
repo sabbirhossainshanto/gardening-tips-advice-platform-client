@@ -12,4 +12,5 @@ export interface IResponse<T> {
   message: string;
   data?: T;
   error: any;
+  meta?: any;
 }

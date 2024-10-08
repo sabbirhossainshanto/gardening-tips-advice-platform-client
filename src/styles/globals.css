@@ -22,6 +22,10 @@
   }
 }
 
+.container-box .card-skeleton {
+  min-height: 300px; /* Ensure card skeletons have a minimum height */
+}
+
 .hover-nav-item:hover {
   background-color: #a8b3cf33;
 }
