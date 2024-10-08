@@ -62,8 +62,8 @@ export const Navbar = () => {
           ...query,
           sort: "upvotes",
           searchTerm: e.target.value,
-          page: 0,
-          limit: 0,
+          // page: 0,
+          // limit: 0,
         })
       }
       aria-label="Search"
