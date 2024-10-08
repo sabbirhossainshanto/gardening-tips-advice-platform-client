@@ -10,7 +10,7 @@ const GTDatePicker = ({ name, label, variant }: IProps) => {
   return (
     <Controller
       name={name}
-      render={({ field: { value, ...field } }) => (
+      render={({ field: { ...field } }) => (
         <DatePicker
           {...field}
           label={label}

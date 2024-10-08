@@ -11,7 +11,6 @@ import {
 import { Image } from "@nextui-org/image";
 import {
   Bookmark,
-  DeleteIcon,
   DownVote,
   FillBookmark,
   FillDownVote,

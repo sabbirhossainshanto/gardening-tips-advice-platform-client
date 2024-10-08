@@ -9,6 +9,10 @@
   @apply bg-[#6a00f5] text-white;
 }
 
+.infinite-scroll-component__outerdiv {
+  min-width: 100%;
+}
+
 .container-box {
   width: 100%;
   margin-right: auto;
@@ -20,10 +24,6 @@
   .container-box {
     max-width: 1400px;
   }
-}
-
-.container-box .card-skeleton {
-  min-height: 300px; /* Ensure card skeletons have a minimum height */
 }
 
 .hover-nav-item:hover {

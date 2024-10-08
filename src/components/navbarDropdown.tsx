@@ -17,7 +17,6 @@ import { protectedRoute } from "../constant";
 import { useGetMe } from "../hooks/profile";
 import { Badge } from "@nextui-org/badge";
 import { CheckIcon } from "lucide-react";
-import { Button } from "@nextui-org/button";
 
 export default function NavbarDropdown() {
   const { setIsLoading: userLoading, user } = useUser();

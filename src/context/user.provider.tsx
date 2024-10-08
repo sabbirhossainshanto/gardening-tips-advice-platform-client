@@ -9,7 +9,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { IUser } from "../types";
+import { IPost, IUser } from "../types";
 import { getCurrentUser } from "../services/AuthService";
 
 export const UserContext = createContext<IUserContext | undefined>(undefined);
@@ -33,6 +33,12 @@ interface IUserContext {
       page: number;
     }>
   >;
+  posts: IPost[];
+  setPosts: Dispatch<SetStateAction<IPost[]>>;
+  total: number | null;
+  setTotal: Dispatch<SetStateAction<number | null>>;
+  currentCount: number;
+  setCurrentCount: Dispatch<SetStateAction<number>>;
 }
 
 const UserProvider = ({ children }: { children: ReactNode }) => {
@@ -44,6 +50,9 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
     limit: 6,
     page: 1,
   });
+  const [posts, setPosts] = useState<IPost[]>([]);
+  const [total, setTotal] = useState<number | null>(null);
+  const [currentCount, setCurrentCount] = useState(0);
 
   const handleUser = async () => {
     const user = await getCurrentUser();
@@ -57,7 +66,20 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <UserContext.Provider
-      value={{ isLoading, setIsLoading, setUser, user, query, setQuery }}
+      value={{
+        isLoading,
+        setIsLoading,
+        setUser,
+        user,
+        query,
+        setQuery,
+        posts,
+        setPosts,
+        total,
+        setTotal,
+        currentCount,
+        setCurrentCount,
+      }}
     >
       {children}
     </UserContext.Provider>

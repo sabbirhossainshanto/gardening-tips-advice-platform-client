@@ -3,7 +3,7 @@
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { BoldIcon, ImageIcon, ItalicIcon, VideoIcon } from "lucide-react";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef } from "react";
 import Image from "@tiptap/extension-image";
 import { uploadToCloudinary } from "@/src/utils/uploadToCloudinary";
 import TextAlign from "@tiptap/extension-text-align";

@@ -6,10 +6,7 @@ const CardSkeleton = () => {
     <div className="container-box">
       <div className="my-8 grid justify-center gap-10 sm:grid-cols-1 md:grid-cols-3">
         {[...Array(6)].map((_, i) => (
-          <NextUiCard
-            key={i}
-            className="h-[300px] w-full rounded-3xl card-skeleton"
-          >
+          <NextUiCard key={i} className="h-[300px] w-full rounded-3xl ">
             <Skeleton className="rounded-lg">
               <div className="h-60 rounded-lg bg-default-300" />
             </Skeleton>

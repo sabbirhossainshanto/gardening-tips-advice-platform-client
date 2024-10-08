@@ -2,7 +2,6 @@
 
 import nexiosInstance from "@/src/lib/NexiosInstance";
 import { ICommentPayload } from "@/src/types/comment";
-import { revalidateTag } from "next/cache";
 
 export const addComment = async (payload: ICommentPayload) => {
   try {

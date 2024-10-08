@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useUser } from "@/src/context/user.provider";
-import { useDeletePost } from "@/src/hooks/post";
 import { IPost } from "@/src/types";
 import handleCopyPostURL from "@/src/utils/handleCopyPostURL";
 import {

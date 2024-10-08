@@ -103,6 +103,7 @@ export const useGetAllPost = (query: any) => {
   return useQuery<any, Error, IResponse<IPost[] | undefined>>({
     queryKey: [`GET_ALL_POST`, query],
     queryFn: async () => await getAllPost(query),
+    gcTime: 0,
   });
 };
 

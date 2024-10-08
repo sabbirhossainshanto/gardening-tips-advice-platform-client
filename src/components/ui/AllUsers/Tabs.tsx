@@ -17,7 +17,7 @@ const Tabs = ({ users, myProfile }: ITabsProps) => {
     mutate(
       { followingId: id },
       {
-        onSuccess(data, variables, context) {
+        onSuccess() {
           queryClient.invalidateQueries({ queryKey: ["all-users"] });
         },
       }

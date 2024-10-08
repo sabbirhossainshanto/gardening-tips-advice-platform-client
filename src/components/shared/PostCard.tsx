@@ -26,7 +26,6 @@ import { useGetMe } from "@/src/hooks/profile";
 import { useRouter } from "next/navigation";
 import PostActions from "../modal/PostActions";
 import UpdatePost from "../modal/UpdatePost";
-import { Button } from "@nextui-org/button";
 import { DeleteIcon, EditIcon } from "lucide-react";
 import { useShowUpdatePostModal } from "@/src/store/updatePostModal";
 import { useState } from "react";
@@ -106,8 +105,6 @@ const PostCard = ({ post }: { post: IPost }) => {
       },
     });
   };
-
-  const contentHTML = { __html: post?.content };
 
   return (
     <>

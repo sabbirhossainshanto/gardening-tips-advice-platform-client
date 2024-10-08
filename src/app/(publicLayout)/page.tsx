@@ -9,7 +9,7 @@ import { useUser } from "@/src/context/user.provider";
 import { useGetAllPost } from "@/src/hooks/post";
 import useDebounce from "@/src/hooks/useDebounce";
 import { IPost } from "@/src/types";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function Home() {
@@ -17,11 +17,18 @@ export default function Home() {
     window.scrollTo(0, 0);
   }, []);
 
-  const { query, setQuery, user } = useUser();
-  const [posts, setPosts] = useState<IPost[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [currentCount, setCurrentCount] = useState(0);
-  const [total, setTotal] = useState(null);
+  const {
+    query,
+    setQuery,
+    user,
+    posts,
+    setPosts,
+    total,
+    setTotal,
+    currentCount,
+    setCurrentCount,
+  } = useUser();
+
   const debouncedSearchTerm = useDebounce(query.searchTerm, 200);
   const debouncedQuery = {
     ...query,
@@ -32,7 +39,6 @@ export default function Home() {
 
   useEffect(() => {
     if (data?.data && data?.data?.length > 0) {
-      setLoading(false);
       setPosts((prevPosts) => [...prevPosts, ...data.data!]);
       setTotal(data?.meta?.total);
       setCurrentCount((prevCount) => prevCount + data.data!.length);
@@ -50,43 +56,27 @@ export default function Home() {
         <SortByUpVotes />
       </div>
 
-      {loading ? (
-        <CardSkeleton />
-      ) : (
-        <InfiniteScroll
-          dataLength={posts?.length}
-          next={() => {
-            setQuery((prev) => ({ ...prev, page: prev.page + 1 }));
-            refetch();
-          }}
-          hasMore={currentCount !== total}
-          loader={<CardSkeleton />}
-          endMessage={
-            <p style={{ textAlign: "center" }}>
-              <b>No more post available!</b>
-            </p>
-          }
-        >
-          <div className="w-full grid  gap-10 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 p-5">
-            {posts?.map((post: IPost) => (
-              <PostCard key={post?._id} post={post} />
-            ))}
-          </div>
-        </InfiniteScroll>
-      )}
-      {/* {isLoading ? (
-        <CardSkeleton />
-      ) : (
-        <Suspense fallback={<CardSkeleton />}>
-          <div className="w-full grid  gap-10 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 p-5">
-            {data?.data?.map((post: IPost) => (
-              <PostCard key={post?._id} post={post} />
-            ))}
-          </div>
-        </Suspense>
-      )} */}
+      <InfiniteScroll
+        dataLength={posts?.length}
+        next={() => {
+          setQuery((prev) => ({ ...prev, page: prev.page + 1 }));
+          refetch();
+        }}
+        hasMore={currentCount !== total}
+        loader={<CardSkeleton />}
+        endMessage={
+          <p style={{ textAlign: "center" }}>
+            <b>No more post available!</b>
+          </p>
+        }
+      >
+        <div className="w-full grid  gap-10 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 p-5">
+          {posts?.map((post: IPost) => (
+            <PostCard key={post?._id} post={post} />
+          ))}
+        </div>
+      </InfiniteScroll>
 
-      {/* <Spinner ref={ref} size="lg" /> */}
       <div className="my-20">
         <div className="section-title my-8">
           <h2 className="mb-2 text-center text-2xl">Recent gardening images</h2>
