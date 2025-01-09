@@ -1,6 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+header {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
 
 .editor-button-group button {
   @apply flex gap-2 border border-gray-800 items-center justify-center rounded-lg px-2 py-2;
@@ -110,4 +114,8 @@
 
 .tiptap li {
   list-style: square;
+}
+
+.swiper-wrapper {
+  gap: 8px !important;
 }

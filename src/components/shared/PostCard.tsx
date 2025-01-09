@@ -114,7 +114,7 @@ const PostCard = ({ post }: { post: IPost }) => {
       <NextUiCard
         ref={targetRef}
         isFooterBlurred
-        className="h-[400px] w-full p-3 border border-gray-700 "
+        className="h-[400px] w-full  bg-white "
       >
         <CardHeader className="flex-col items-start">
           <h4 className="mt-2  p-1 text-xl font-medium ">{post.title}</h4>

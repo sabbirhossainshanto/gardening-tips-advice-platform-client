@@ -1,6 +1,8 @@
 export * from "./form";
 export * from "./user";
 export * from "./post";
+export * from "./newsFeed";
+export * from "./userRelationship";
 import { SVGProps } from "react";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {

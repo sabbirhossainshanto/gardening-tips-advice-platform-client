@@ -16,6 +16,7 @@ const nexiosInstance = new Nexios(defaultConfig);
 // Add request interceptor
 nexiosInstance.interceptors.request.use((config) => {
   const accessToken = cookies().get("accessToken")?.value;
+
   if (accessToken) {
     config.headers = {
       ...config.headers,

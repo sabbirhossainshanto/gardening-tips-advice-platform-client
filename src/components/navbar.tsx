@@ -17,7 +17,6 @@ import NextLink from "next/link";
 import clsx from "clsx";
 
 import { SearchIcon, Logo } from "../components/icons";
-import { siteConfig } from "../config/site";
 import { ThemeSwitch } from "./theme-switch";
 import Login from "./modal/Login";
 import { useUser } from "../context/user.provider";
@@ -35,6 +34,9 @@ import { useGetUpvoters } from "../hooks/post";
 import { useGetMe } from "../hooks/profile";
 import { useShowForgotPasswordModal } from "../store/showForgotPassword";
 import ForgotPassword from "./modal/ForgotPassword";
+import { Home } from "lucide-react";
+import { FaBookmark, FaUserFriends } from "react-icons/fa";
+import { LiaUserFriendsSolid } from "react-icons/lia";
 
 export const Navbar = () => {
   const [changePassword, setChangePassword] = useChangePasswordModal();
@@ -66,7 +68,10 @@ export const Navbar = () => {
           // limit: 0,
         })
       }
+      radius="none"
       aria-label="Search"
+      size="lg"
+      className="w-[300px]"
       classNames={{
         inputWrapper: "bg-default-100",
         input: "text-sm",
@@ -81,13 +86,22 @@ export const Navbar = () => {
   );
 
   return (
-    <>
+    <div className="bg-white shadow-md fixed top-0 right-0 left-0 z-40 h-[90px]">
       {changePassword && <ChangePassword />}
       {showRegister && <Register />}
       {showLogin && <Login />}
       {showForgotPassword && <ForgotPassword />}
-      <div className="container-box">
-        <NextUINavbar maxWidth="full" position="sticky">
+      <div className="container-box h-full flex flex-col items-center">
+        <NextUINavbar
+          maxWidth="full"
+          style={{
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+          position="sticky"
+        >
           <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
             <NavbarBrand as="li" className="gap-3 max-w-fit">
               <NextLink
@@ -95,24 +109,66 @@ export const Navbar = () => {
                 href="/"
               >
                 <Logo />
-                <p className="font-bold text-inherit">Gardening</p>
+                <p className="font-extrabold text-inherit text-2xl text-[#05f]">
+                  Gardening
+                </p>
               </NextLink>
             </NavbarBrand>
-            <ul className="hidden lg:flex gap-6 justify-start ml-2">
-              {siteConfig.navItems.map((item) => (
-                <NavbarItem key={item.href}>
-                  <NextLink
-                    className={clsx(
-                      linkStyles({ color: "foreground" }),
-                      "data-[active=true]:text-primary data-[active=true]:font-medium"
-                    )}
-                    color="foreground"
-                    href={item.href}
-                  >
-                    {item.label}
-                  </NextLink>
-                </NavbarItem>
-              ))}
+          </NavbarContent>
+          <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
+            <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
+            <ul className="hidden lg:flex gap-6 justify-start items-center  ml-2">
+              <NavbarItem className="flex items-center gap-3">
+                <NextLink
+                  className={clsx(
+                    linkStyles({ color: "foreground" }),
+                    `rounded-full p-5 ${pathname === "/" ? "bg-[#d2e3ff] " : "bg-gray-200 "}`
+                  )}
+                  color="foreground"
+                  href="/"
+                >
+                  <Home color={`${pathname === "/" ? "#1e74fd" : "gray"}`} />
+                </NextLink>
+                <NextLink
+                  className={clsx(
+                    linkStyles({ color: "foreground" }),
+                    `rounded-full p-5 ${pathname === "/friends" ? "bg-[#d2e3ff] " : "bg-gray-200 "}`
+                  )}
+                  color="foreground"
+                  href="/friends"
+                >
+                  <FaUserFriends
+                    size={25}
+                    color={`${pathname === "/friends" ? "#1e74fd" : "gray"}`}
+                  />
+                </NextLink>
+                <NextLink
+                  className={clsx(
+                    linkStyles({ color: "foreground" }),
+                    `rounded-full p-5 ${pathname === "/followers" ? "bg-[#d2e3ff] " : "bg-gray-200 "}`
+                  )}
+                  color="foreground"
+                  href="/followers"
+                >
+                  <LiaUserFriendsSolid
+                    size={30}
+                    color={`${pathname === "/followers" ? "#1e74fd" : "gray"}`}
+                  />
+                </NextLink>
+                <NextLink
+                  className={clsx(
+                    linkStyles({ color: "foreground" }),
+                    `rounded-full p-5 ${pathname === "/bookmark" ? "bg-[#d2e3ff] " : "bg-gray-200 "}`
+                  )}
+                  color="foreground"
+                  href="/bookmark"
+                >
+                  <FaBookmark
+                    size={23}
+                    color={`${pathname === "/bookmark" ? "#1e74fd" : "gray"}`}
+                  />
+                </NextLink>
+              </NavbarItem>
               {upvoters?.data &&
                 upvoters?.data?.length > 0 &&
                 !myData?.data?.isVerified && (
@@ -130,10 +186,6 @@ export const Navbar = () => {
             className="hidden sm:flex basis-1/5 sm:basis-full"
             justify="end"
           >
-            <NavbarItem className="hidden sm:flex gap-2">
-              <ThemeSwitch />
-            </NavbarItem>
-            <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
             <NavbarItem className="hidden md:flex">
               {user?.email ? (
                 <NavbarDropdown />
@@ -170,58 +222,6 @@ export const Navbar = () => {
                       Dashboard
                     </Link>
                   </NavbarMenuItem>
-                  <NavbarMenuItem key={`user-management`}>
-                    <Link
-                      color={
-                        pathname === "/dashboard/user-management"
-                          ? "primary"
-                          : "foreground"
-                      }
-                      href="/dashboard/user-management"
-                      size="lg"
-                    >
-                      User Management
-                    </Link>
-                  </NavbarMenuItem>
-                  <NavbarMenuItem key={`post-management`}>
-                    <Link
-                      color={
-                        pathname === "/dashboard/post-management"
-                          ? "primary"
-                          : "foreground"
-                      }
-                      href="/dashboard/post-management"
-                      size="lg"
-                    >
-                      Post Management
-                    </Link>
-                  </NavbarMenuItem>
-                  <NavbarMenuItem key={`payment-history`}>
-                    <Link
-                      color={
-                        pathname === "/dashboard/payment-history"
-                          ? "primary"
-                          : "foreground"
-                      }
-                      href="/dashboard/payment-history"
-                      size="lg"
-                    >
-                      Payment History
-                    </Link>
-                  </NavbarMenuItem>
-                  <NavbarMenuItem key={`profile-update`}>
-                    <Link
-                      color={
-                        pathname === "/dashboard/profile-update"
-                          ? "primary"
-                          : "foreground"
-                      }
-                      href="/dashboard/profile-update"
-                      size="lg"
-                    >
-                      Profile Update
-                    </Link>
-                  </NavbarMenuItem>
                 </>
               ) : (
                 <>
@@ -234,19 +234,7 @@ export const Navbar = () => {
                       Profile
                     </Link>
                   </NavbarMenuItem>
-                  <NavbarMenuItem key={`profile`}>
-                    <Link
-                      color={
-                        pathname === "/profile/update-profile"
-                          ? "primary"
-                          : "foreground"
-                      }
-                      href="/profile/update-profile"
-                      size="lg"
-                    >
-                      Update Profile
-                    </Link>
-                  </NavbarMenuItem>
+
                   <NavbarMenuItem key={`profile`}>
                     <Link
                       color={
@@ -272,26 +260,7 @@ export const Navbar = () => {
                   Change Password
                 </Link>
               </NavbarMenuItem>
-              <NavbarMenuItem key={`about`}>
-                <Link
-                  href="/about-us"
-                  color={"foreground"}
-                  size="lg"
-                  className="cursor-pointer"
-                >
-                  About
-                </Link>
-              </NavbarMenuItem>
-              <NavbarMenuItem key={`contact`}>
-                <Link
-                  href="/contact-us"
-                  color={"foreground"}
-                  size="lg"
-                  className="cursor-pointer"
-                >
-                  Contact Us
-                </Link>
-              </NavbarMenuItem>
+
               {user?.email ? (
                 <Link onClick={handleLogout} size="lg" color="danger">
                   Logout
@@ -309,6 +278,6 @@ export const Navbar = () => {
           </NavbarMenu>
         </NextUINavbar>
       </div>
-    </>
+    </div>
   );
 };

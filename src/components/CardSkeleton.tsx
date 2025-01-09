@@ -4,7 +4,7 @@ import { Skeleton } from "@nextui-org/skeleton";
 const CardSkeleton = () => {
   return (
     <div className="container-box">
-      <div className="my-8 grid justify-center gap-10 sm:grid-cols-1 md:grid-cols-3">
+      <div className="my-8 grid justify-center gap-10 sm:grid-cols-1 ">
         {[...Array(6)].map((_, i) => (
           <NextUiCard key={i} className="h-[300px] w-full rounded-3xl ">
             <Skeleton className="rounded-lg">
