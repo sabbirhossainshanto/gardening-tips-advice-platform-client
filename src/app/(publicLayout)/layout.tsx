@@ -9,13 +9,13 @@ const PublicLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="relative flex flex-col h-full">
       <Navbar />
-      <div className="flex container-box">
+      <div className="flex">
         {/* Left Sidebar */}
 
         <LeftSidebar />
 
         {/* Main Content */}
-        <main className="overflow-y-auto mt-[130px] lg:mx-[150px] h-full w-full">
+        <main className="overflow-y-auto mt-[115px] lg:mx-[300px] h-full w-full">
           {children}
         </main>
         {/* Right Sidebar */}
