@@ -69,12 +69,15 @@ export default function NavbarDropdown() {
         </DropdownTrigger>
         {user?.role === "USER" ? (
           <DropdownMenu aria-label="Static Actions">
-            <DropdownItem onClick={() => handleNavigation("/profile")}>
+            <DropdownItem
+              key={"profile"}
+              onPress={() => handleNavigation("/profile")}
+            >
               Profile
             </DropdownItem>
 
             <DropdownItem
-              onClick={() => setChangePassword(true)}
+              onPress={() => setChangePassword(true)}
               key="change password"
             >
               Change Password
@@ -91,18 +94,21 @@ export default function NavbarDropdown() {
           </DropdownMenu>
         ) : (
           <DropdownMenu aria-label="Static Actions">
-            <DropdownItem onClick={() => handleNavigation("/dashboard")}>
+            <DropdownItem
+              key={"dashboard"}
+              onPress={() => handleNavigation("/dashboard")}
+            >
               Dashboard
             </DropdownItem>
             <DropdownItem
-              onClick={() => setChangePassword(true)}
+              onPress={() => setChangePassword(true)}
               key="change password"
             >
               Change Password
             </DropdownItem>
 
             <DropdownItem
-              onClick={handleLogout}
+              onPress={handleLogout}
               key="delete"
               className="text-danger"
               color="danger"
