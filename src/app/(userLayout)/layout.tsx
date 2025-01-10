@@ -2,15 +2,21 @@
 
 import React, { ReactNode } from "react";
 import { Navbar } from "@/src/components/navbar";
-import UserSidebar from "@/src/components/shared/UserSidebar";
+import LeftSidebar from "@/src/components/shared/LeftSidebar";
 
 const UserLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="relative">
+    <div className="relative flex flex-col h-full">
       <Navbar />
-      <div className="lg:grid grid-cols-12 lg:border-t-1 border-gray-800 h-screen">
-        <UserSidebar />
-        <main className="col-span-10">{children}</main>
+      <div className="flex container-box">
+        {/* Left Sidebar */}
+
+        <LeftSidebar />
+
+        {/* Main Content */}
+        <main className="overflow-y-auto mt-[130px] lg:mx-[250px] h-full w-full">
+          {children}
+        </main>
       </div>
     </div>
   );

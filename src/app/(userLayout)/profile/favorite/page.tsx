@@ -18,7 +18,7 @@ const FavoritePosts = () => {
           })}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center h-[40vh]">
+        <div className="flex flex-col items-center justify-center ">
           <h2>You dont have any favorite post yet!</h2>
         </div>
       )}

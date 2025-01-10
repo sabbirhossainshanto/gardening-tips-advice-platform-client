@@ -5,15 +5,12 @@ import {
   getMyFollowers,
   getMyFollowings,
   getPendingFriend,
+  getSingleFollowing,
   unFollowUser,
 } from "../services/userRelationship";
 
 export const useCreateRelationship = () => {
-  return useMutation<
-    IResponse<IUserRelationship>,
-    Error,
-    Partial<IUserRelationship>
-  >({
+  return useMutation<IResponse<IUserRelationship>, Error, any>({
     mutationKey: ["add-relation"],
     mutationFn: async (payload) => await createRelationship(payload),
   });
@@ -29,6 +26,12 @@ export const useGetMyFollowings = () => {
   return useQuery<any, Error, IResponse<IUserRelationship[]>>({
     queryKey: ["my-followings"],
     queryFn: async () => await getMyFollowings(),
+  });
+};
+export const useGetMySingleFollowing = (id: string) => {
+  return useQuery<any, Error, IResponse<IUserRelationship>>({
+    queryKey: ["my-followings", id],
+    queryFn: async () => await getSingleFollowing(id),
   });
 };
 export const useGetPendingFriend = () => {

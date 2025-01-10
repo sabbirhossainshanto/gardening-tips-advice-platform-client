@@ -39,6 +39,16 @@ export const getMyFollowings = async () => {
     throw new Error(error);
   }
 };
+export const getSingleFollowing = async (id: string) => {
+  try {
+    const { data }: any = await nexiosInstance.get(
+      `/user-relationship/following/${id}`
+    );
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
 export const unFollowUser = async (id: string) => {
   try {
     const { data }: any = await nexiosInstance.delete(

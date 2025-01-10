@@ -8,7 +8,7 @@ const SingleUserPosts = async ({ params }: { params: { userId: string } }) => {
     `/posts/user/${params.userId}`
   );
   return (
-    <div className="w-full grid justify-center gap-10 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 p-5">
+    <div className="w-full grid justify-center gap-10 grid-cols-1 p-5">
       {data?.data?.map((post: IPost) => (
         <PostCard key={post?._id} post={post} />
       ))}

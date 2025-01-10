@@ -74,7 +74,7 @@ const Following = () => {
           </div>
         );
       })}
-      {data?.data?.length === 0 && <p>You have not following anyone</p>}
+      {data?.data?.length === 0 && <p>You are not following anyone</p>}
     </ul>
   );
 };

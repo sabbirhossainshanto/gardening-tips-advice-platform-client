@@ -19,7 +19,7 @@ const Dashboard = () => {
   const { postStats, userStats, verifiedUserStats } = data?.data;
 
   return (
-    <div className="container-box p-2.5">
+    <div>
       <div className="gap-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
         <Card className="h-[100px]" shadow="sm">
           <CardBody className="overflow-visible p-0">

@@ -95,9 +95,9 @@ export default function UserManagement() {
       case "actions":
         return (
           <div className="relative flex items-center justify-end gap-2">
-            <Dropdown>
+            <Dropdown radius="sm">
               <DropdownTrigger>
-                <Button variant="bordered">
+                <Button radius="sm" variant="bordered">
                   Edit User
                   <Tooltip content="Edit user">
                     <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
@@ -162,8 +162,8 @@ export default function UserManagement() {
 
   return (
     <>
-      <div className="p-5">
-        <Table aria-label="Example table with custom cells">
+      <div>
+        <Table radius="none" aria-label="Example table with custom cells">
           <TableHeader columns={columns}>
             {(column) => (
               <TableColumn

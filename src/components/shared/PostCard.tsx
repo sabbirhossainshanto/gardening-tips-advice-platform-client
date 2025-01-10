@@ -41,6 +41,7 @@ const PostCard = ({ post }: { post: IPost }) => {
   const [showModal, setShowModal] = useShowUpdatePostModal();
   const { mutate: addToBookmark } = useAddBookmark();
   const [postId, setPostId] = useState("");
+  const [showMore, setShowMore] = useState(false);
 
   const favoritesPost: string[] | undefined =
     data?.data && data?.data?.favorites?.map((post: IPost) => post._id);
@@ -114,27 +115,50 @@ const PostCard = ({ post }: { post: IPost }) => {
       <NextUiCard
         ref={targetRef}
         isFooterBlurred
-        className="h-[400px] w-full  bg-white "
+        className="h-full w-full  bg-white "
       >
         <CardHeader className="flex-col items-start">
-          <h4 className="mt-2  p-1 text-xl font-medium ">{post.title}</h4>
-          <p>{post?.category}</p>
           <p className="absolute top-0 left-1  px-2 text-tiny uppercase text-success">
             {post?.isPremium && "Premium"}
           </p>
-          <p className="absolute -top-0 right-1  px-2 text-tiny uppercase">
-            {user?._id === post?.user?._id && "My Post"}
-          </p>
+
+          <div className="flex items-center justify-between w-full">
+            <h4 className="mt-2  p-1 text-xl font-medium ">{post.title}</h4>
+            <PostActions post={post} toPDF={toPDF} />
+          </div>
         </CardHeader>
         <CardBody>
-          {/* <div
-            className="post-card mb-5"
-            dangerouslySetInnerHTML={contentHTML}
-          /> */}
+          <div>
+            {!showMore ? (
+              <span> {post?.description?.substring(0, 200)}... </span>
+            ) : (
+              <span>{post?.description}</span>
+            )}
+            {!showMore && (
+              <button
+                onClick={() => setShowMore(true)}
+                className="text-primary"
+              >
+                See More
+              </button>
+            )}
+          </div>
+
+          {showMore && (
+            <div
+              className="post-card mb-5"
+              dangerouslySetInnerHTML={{ __html: post?.content }}
+            />
+          )}
+          {showMore && (
+            <button onClick={() => setShowMore(false)} className="text-primary">
+              See Less
+            </button>
+          )}
           <Image
             removeWrapper
             alt="Card example background"
-            className="h-[200px] w-full object-cover"
+            className="h-[350px] w-full object-cover"
             src={post.imageUrl}
           />
         </CardBody>
@@ -226,8 +250,6 @@ const PostCard = ({ post }: { post: IPost }) => {
                 className="text-success cursor-pointer"
               />
             ) : null}
-
-            <PostActions post={post} toPDF={toPDF} />
           </div>
         </CardFooter>
       </NextUiCard>

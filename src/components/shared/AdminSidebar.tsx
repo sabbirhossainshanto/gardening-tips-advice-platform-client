@@ -7,48 +7,46 @@ import {
   User2,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 const AdminSidebar = () => {
-  const pathname = usePathname();
   return (
-    <div className="hidden lg:block  col-span-2  border-r-1 border-gray-800 pt-5">
+    <>
       <Link
         href="/dashboard"
-        className={`flex items-center gap-3 hover-nav-item px-3 py-2 ${pathname === "/dashboard" ? "bg-[#a8b3cf33]" : ""}`}
+        className="flex items-center  gap-3 hover:bg-gray-100 px-5 py-3"
       >
         <LayoutDashboard size={18} />
-        <span>Dashboard</span>
+        <span className="text-lg font-medium">Dashboard</span>
       </Link>
       <Link
         href="/dashboard/user-management"
-        className={`flex items-center gap-3 hover-nav-item px-3 py-2 ${pathname === "/dashboard/user-management" ? "bg-[#a8b3cf33]" : ""}`}
+        className="flex items-center  gap-3 hover:bg-gray-100 px-5 py-3"
       >
         <User size={18} />
-        <span>User Management</span>
+        <span className="text-lg font-medium">User Management</span>
       </Link>
       <Link
         href="/dashboard/post-management"
-        className={`flex items-center gap-3 hover-nav-item px-3 py-2 ${pathname === "/dashboard/post-management" ? "bg-[#a8b3cf33]" : ""}`}
+        className="flex items-center  gap-3 hover:bg-gray-100 px-5 py-3"
       >
         <GalleryThumbnails size={18} />
-        <span>Post Management</span>
+        <span className="text-lg font-medium">Post Management</span>
       </Link>
       <Link
         href="/dashboard/payment-history"
-        className={`flex items-center gap-3 hover-nav-item px-3 py-2 ${pathname === "/dashboard/payment-history" ? "bg-[#a8b3cf33]" : ""}`}
+        className="flex items-center  gap-3 hover:bg-gray-100 px-5 py-3"
       >
         <HistoryIcon size={18} />
-        <span>Payment History</span>
+        <span className="text-lg font-medium">Payment History</span>
       </Link>
       <Link
         href="/dashboard/profile-update"
-        className={`flex items-center gap-3 hover-nav-item px-3 py-2 ${pathname === "/dashboard/profile-update" ? "bg-[#a8b3cf33]" : ""}`}
+        className="flex items-center  gap-3 hover:bg-gray-100 px-5 py-3"
       >
         <User2 size={18} />
-        <span>Profile Update</span>
+        <span className="text-lg font-medium">Profile Update</span>
       </Link>
-    </div>
+    </>
   );
 };
 

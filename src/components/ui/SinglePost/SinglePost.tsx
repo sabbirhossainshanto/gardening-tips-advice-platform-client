@@ -27,7 +27,6 @@ import { Input } from "@nextui-org/input";
 import { useAddComment, useGetAllComment } from "@/src/hooks/comment";
 import { useState } from "react";
 import Comment from "../Comment/Comment";
-import PostUser from "./PostUser";
 import PostActions from "../../modal/PostActions";
 import UpdatePost from "../../modal/UpdatePost";
 import { useShowUpdatePostModal } from "@/src/store/updatePostModal";
@@ -132,13 +131,34 @@ const SinglePost = ({ post }: { post: IPost }) => {
         <UpdatePost postId={postId} setPostId={setPostId} />
       )}
       <div className="md:grid md:grid-cols-12 gap-4 mb-5">
-        <div className="col-span-8">
+        <div className="col-span-12">
           <NextUiCard
+            radius="sm"
             ref={targetRef}
             isFooterBlurred
-            className=" w-full p-3 border border-gray-700"
+            className=" w-full p-3 shadow-md"
           >
             <CardHeader className="flex-col items-start">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                  {post?.user?.profilePhoto && (
+                    <Image
+                      className="rounded-full"
+                      src={post?.user?.profilePhoto}
+                      height={50}
+                      width={50}
+                      alt="profile"
+                    />
+                  )}
+                  <div>
+                    <h4 className="text-primary font-semibold">
+                      {post?.user?.name}
+                    </h4>
+                    <p className="text-xs"> {post?.category}</p>
+                  </div>
+                </div>
+                <PostActions post={post} toPDF={toPDF} />
+              </div>
               <h4 className="mt-2  p-1 text-2xl font-medium ">{post?.title}</h4>
               <p className="absolute -top-0 right-1  px-2 text-tiny uppercase">
                 {user?._id === post?.user?._id && "My Post"}
@@ -219,7 +239,6 @@ const SinglePost = ({ post }: { post: IPost }) => {
                     className="text-success cursor-pointer"
                   />
                 ) : null}
-                <PostActions post={post} toPDF={toPDF} />
               </div>
             </CardFooter>
 
@@ -232,6 +251,7 @@ const SinglePost = ({ post }: { post: IPost }) => {
                 type="text"
               />
               <Button
+                radius="sm"
                 onClick={() => handleAddComment(post?._id)}
                 isLoading={isCommentPending && !isCommentSuccess ? true : false}
                 type="submit"
@@ -248,9 +268,6 @@ const SinglePost = ({ post }: { post: IPost }) => {
               </div>
             )}
           </NextUiCard>
-        </div>
-        <div className="md:col-span-4 mt-10 md:mt-0">
-          <PostUser postUser={post?.user} />
         </div>
       </div>
     </>

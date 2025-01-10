@@ -2,8 +2,8 @@ import "../styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 import { siteConfig } from "../config/site";
-import { fontSans } from "../config/fonts";
 import { Providers } from "../lib/Provider";
+import { poppins } from "../config/fonts";
 
 export const metadata: Metadata = {
   title: {
@@ -34,7 +34,7 @@ export default function RootLayout({
       <body
         className={clsx(
           "min-h-screen h-full bg-[#eeeff2] font-sans antialiased",
-          fontSans.variable
+          poppins.className
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>

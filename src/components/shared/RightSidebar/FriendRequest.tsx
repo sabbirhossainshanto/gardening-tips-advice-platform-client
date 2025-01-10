@@ -53,6 +53,7 @@ const FriendRequest = () => {
           </div>
         );
       })}
+      {data?.data?.length === 0 && <p>You dont have any friend request</p>}
     </ul>
   );
 };

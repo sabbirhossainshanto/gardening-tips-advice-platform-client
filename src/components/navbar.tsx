@@ -9,7 +9,6 @@ import {
   NavbarItem,
   NavbarMenuItem,
 } from "@nextui-org/navbar";
-import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
 import { Input } from "@nextui-org/input";
 import { link as linkStyles } from "@nextui-org/theme";
@@ -17,19 +16,15 @@ import NextLink from "next/link";
 import clsx from "clsx";
 
 import { SearchIcon, Logo } from "../components/icons";
-import { ThemeSwitch } from "./theme-switch";
-import Login from "./modal/Login";
 import { useUser } from "../context/user.provider";
 import { usePathname, useRouter } from "next/navigation";
 import { logOut } from "../services/AuthService";
 import NavbarDropdown from "./navbarDropdown";
 import { useShowRegisterModal } from "../store/showRegister";
 import Register from "./modal/Register";
-import { useShowLoginModal } from "../store/showLogin";
 import CreatePost from "./modal/CreatePost";
 import ChangePassword from "./modal/ChangePassword";
 import { useChangePasswordModal } from "../store/showChangePassword";
-import { protectedRoute } from "../constant";
 import { useGetUpvoters } from "../hooks/post";
 import { useGetMe } from "../hooks/profile";
 import { useShowForgotPasswordModal } from "../store/showForgotPassword";
@@ -37,25 +32,37 @@ import ForgotPassword from "./modal/ForgotPassword";
 import { Home } from "lucide-react";
 import { FaBookmark, FaUserFriends } from "react-icons/fa";
 import { LiaUserFriendsSolid } from "react-icons/lia";
+import { useEffect } from "react";
 
 export const Navbar = () => {
   const [changePassword, setChangePassword] = useChangePasswordModal();
-  const [showLogin, setShowLogin] = useShowLoginModal();
   const [showRegister] = useShowRegisterModal();
   const [showForgotPassword] = useShowForgotPasswordModal();
   const pathname = usePathname();
   const router = useRouter();
-  const { user, setIsLoading: setUserLoading, setQuery, query } = useUser();
+  const {
+    user,
+    setIsLoading: setUserLoading,
+    setQuery,
+    query,
+    isLoading,
+  } = useUser();
   const { data: myData } = useGetMe(user?.email as string);
   const { data: upvoters } = useGetUpvoters(user?.email as string);
 
   const handleLogout = () => {
     logOut();
     setUserLoading(true);
-    if (protectedRoute.some((route) => pathname.match(route))) {
-      router.push("/");
-    }
+    router.push("/login");
   };
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (!user) {
+        router.push("/login");
+      }
+    }
+  }, [user, isLoading]);
 
   const searchInput = (
     <Input
@@ -89,7 +96,6 @@ export const Navbar = () => {
     <div className="bg-white shadow-md fixed top-0 right-0 left-0 z-40 h-[90px]">
       {changePassword && <ChangePassword />}
       {showRegister && <Register />}
-      {showLogin && <Login />}
       {showForgotPassword && <ForgotPassword />}
       <div className="container-box h-full flex flex-col items-center">
         <NextUINavbar
@@ -110,7 +116,7 @@ export const Navbar = () => {
               >
                 <Logo />
                 <p className="font-extrabold text-inherit text-2xl text-[#05f]">
-                  Gardening
+                  GardenBook
                 </p>
               </NextLink>
             </NavbarBrand>
@@ -187,22 +193,11 @@ export const Navbar = () => {
             justify="end"
           >
             <NavbarItem className="hidden md:flex">
-              {user?.email ? (
-                <NavbarDropdown />
-              ) : (
-                <Button
-                  onClick={() => setShowLogin(true)}
-                  className="text-sm font-normal text-default-600 bg-default-100"
-                  variant="flat"
-                >
-                  Login
-                </Button>
-              )}
+              {user?.email && <NavbarDropdown />}
             </NavbarItem>
           </NavbarContent>
 
           <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-            <ThemeSwitch />
             <NavbarMenuToggle />
           </NavbarContent>
 
@@ -261,18 +256,10 @@ export const Navbar = () => {
                 </Link>
               </NavbarMenuItem>
 
-              {user?.email ? (
+              {user?.email && (
                 <Link onClick={handleLogout} size="lg" color="danger">
                   Logout
                 </Link>
-              ) : (
-                <Button
-                  className="text-sm font-normal text-default-600 bg-default-100"
-                  variant="flat"
-                  onClick={() => setShowLogin(true)}
-                >
-                  Login
-                </Button>
               )}
             </div>
           </NavbarMenu>

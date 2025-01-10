@@ -91,7 +91,7 @@ const CreateGardenJournal = () => {
           <ModalContent>
             {(onClose) => (
               <>
-                <ModalHeader className="flex flex-col gap-1">
+                <ModalHeader className="flex flex-col gap-1 mx-14">
                   Create Garden Journal
                 </ModalHeader>
 

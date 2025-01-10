@@ -7,7 +7,7 @@ import { IPost } from "@/src/types";
 const Profile = () => {
   const { data } = useGetMyPost();
   return (
-    <div>
+    <div className="w-full">
       {data?.data?.length > 0 ? (
         <div className="container-box grid justify-center gap-10 sm:grid-cols-1 md:grid-cols-2 p-5">
           {data?.data?.map((post: IPost) => {
@@ -15,7 +15,7 @@ const Profile = () => {
           })}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center h-[40vh]">
+        <div className="flex flex-col items-center justify-center w-full">
           <h2>You dont have any post yet!</h2>
         </div>
       )}
