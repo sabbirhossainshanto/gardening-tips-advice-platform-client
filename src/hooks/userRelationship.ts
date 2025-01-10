@@ -4,9 +4,11 @@ import {
   createRelationship,
   getMyFollowers,
   getMyFollowings,
+  getMyFriends,
   getPendingFriend,
   getSingleFollowing,
   unFollowUser,
+  updatePendingFriend,
 } from "../services/userRelationship";
 
 export const useCreateRelationship = () => {
@@ -36,8 +38,22 @@ export const useGetMySingleFollowing = (id: string) => {
 };
 export const useGetPendingFriend = () => {
   return useQuery<any, Error, IResponse<IUserRelationship[]>>({
-    queryKey: ["my-pending"],
+    queryKey: ["my-pending=friend"],
     queryFn: async () => await getPendingFriend(),
+  });
+};
+export const useUpdatePendingFriend = () => {
+  return useMutation<any, Error, { type: "accept" | "reject"; userId: string }>(
+    {
+      mutationKey: ["update-pending-friend"],
+      mutationFn: async (payload) => await updatePendingFriend(payload),
+    }
+  );
+};
+export const useGetMyFriend = () => {
+  return useQuery<any, Error, IResponse<IUserRelationship[]>>({
+    queryKey: ["my-friend"],
+    queryFn: async () => await getMyFriends(),
   });
 };
 export const useUnFollowUser = () => {

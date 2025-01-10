@@ -1,23 +1,10 @@
 "use client";
-import {
-  GalleryThumbnails,
-  HistoryIcon,
-  LayoutDashboard,
-  User,
-  User2,
-} from "lucide-react";
+import { GalleryThumbnails, HistoryIcon, User, User2 } from "lucide-react";
 import Link from "next/link";
 
 const AdminSidebar = () => {
   return (
     <>
-      <Link
-        href="/dashboard"
-        className="flex items-center  gap-3 hover:bg-gray-100 px-5 py-3"
-      >
-        <LayoutDashboard size={18} />
-        <span className="text-lg font-medium">Dashboard</span>
-      </Link>
       <Link
         href="/dashboard/user-management"
         className="flex items-center  gap-3 hover:bg-gray-100 px-5 py-3"

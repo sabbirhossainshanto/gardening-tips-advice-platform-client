@@ -12,7 +12,7 @@ const Followers = () => {
     <ul className="mx-[20px] h-fit py-5 space-y-3 border-b pb-3">
       <div className="flex items-center justify-between mt-5 ">
         <h5 className="text-black font-medium">Followers</h5>
-        <Link className="text-primary" href="/friend-request">
+        <Link className="text-primary" href="/followers">
           See All
         </Link>
       </div>

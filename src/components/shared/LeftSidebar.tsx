@@ -28,11 +28,10 @@ const LeftSidebar = () => {
           )}
           <span className="text-lg font-medium">{user?.name}</span>
         </Link>
-        {user?.role === "ADMIN" && <AdminSidebar />}
-        {user?.role === "USER" && <UserSidebar />}
+
         <Link
           className="flex items-center  gap-3 hover:bg-gray-100 px-5 py-3"
-          href="/saved"
+          href="/friends"
         >
           <Image
             height={30}
@@ -45,7 +44,20 @@ const LeftSidebar = () => {
         </Link>
         <Link
           className="flex items-center  gap-3 hover:bg-gray-100 px-5 py-3"
-          href="/saved"
+          href="/friend-requests"
+        >
+          <Image
+            height={30}
+            width={30}
+            className=""
+            alt="profilePhoto"
+            src={assets.friends}
+          />
+          <span className="text-lg font-medium">Friend Requests</span>
+        </Link>
+        <Link
+          className="flex items-center  gap-3 hover:bg-gray-100 px-5 py-3"
+          href="/followers"
         >
           <Image
             height={30}
@@ -56,9 +68,11 @@ const LeftSidebar = () => {
           />
           <span className="text-lg font-medium">Followers</span>
         </Link>
+        {user?.role === "ADMIN" && <AdminSidebar />}
+        {user?.role === "USER" && <UserSidebar />}
         <Link
           className="flex items-center  gap-3 hover:bg-gray-100 px-5 py-3"
-          href="/saved"
+          href="/bookmarked"
         >
           <Image
             height={30}

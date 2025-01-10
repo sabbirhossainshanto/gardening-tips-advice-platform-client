@@ -93,11 +93,11 @@ export const Navbar = () => {
   );
 
   return (
-    <div className="bg-white shadow-md fixed top-0 right-0 left-0 z-40 h-[90px]">
+    <div className="bg-white shadow-md fixed top-0 right-0 left-0 z-40 h-[90px] px-4 md:px-6 lg:px-10">
       {changePassword && <ChangePassword />}
       {showRegister && <Register />}
       {showForgotPassword && <ForgotPassword />}
-      <div className="container-box h-full flex flex-col items-center">
+      <div className="h-full flex flex-col items-center">
         <NextUINavbar
           maxWidth="full"
           style={{
@@ -164,10 +164,10 @@ export const Navbar = () => {
                 <NextLink
                   className={clsx(
                     linkStyles({ color: "foreground" }),
-                    `rounded-full p-5 ${pathname === "/bookmark" ? "bg-[#d2e3ff] " : "bg-gray-200 "}`
+                    `rounded-full p-5 ${pathname === "/bookmarked" ? "bg-[#d2e3ff] " : "bg-gray-200 "}`
                   )}
                   color="foreground"
-                  href="/bookmark"
+                  href="/bookmarked"
                 >
                   <FaBookmark
                     size={23}

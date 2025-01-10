@@ -32,7 +32,7 @@ const Following = () => {
     <ul className="mx-[20px] h-fit py-5 space-y-3 border-b pb-3 mb-20">
       <div className="flex items-center justify-between mt-5 ">
         <h5 className="text-black font-medium">Following</h5>
-        <Link className="text-primary" href="/friend-request">
+        <Link className="text-primary" href="/followings">
           See All
         </Link>
       </div>
@@ -57,7 +57,7 @@ const Following = () => {
             <div className="flex gap-5">
               <Button
                 radius="none"
-                className="bg-[#0088ff] text-white font-medium px-8 rounded-3xl"
+                className="bg-primary text-white font-medium px-8 rounded-3xl"
               >
                 Following
               </Button>

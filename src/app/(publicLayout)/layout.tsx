@@ -15,7 +15,7 @@ const PublicLayout = ({ children }: { children: ReactNode }) => {
         <LeftSidebar />
 
         {/* Main Content */}
-        <main className="overflow-y-auto mt-[130px] lg:mx-[250px] h-full">
+        <main className="overflow-y-auto mt-[130px] lg:mx-[150px] h-full w-full">
           {children}
         </main>
         {/* Right Sidebar */}

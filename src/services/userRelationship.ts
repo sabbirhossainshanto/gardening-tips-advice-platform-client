@@ -69,3 +69,27 @@ export const getPendingFriend = async () => {
     throw new Error(error);
   }
 };
+export const updatePendingFriend = async (payload: {
+  type: "accept" | "reject";
+  userId: string;
+}) => {
+  try {
+    const { data }: any = await nexiosInstance.put(
+      `/user-relationship/pending-friend`,
+      payload
+    );
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+export const getMyFriends = async () => {
+  try {
+    const { data }: any = await nexiosInstance.get(
+      `/user-relationship/friends`
+    );
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
